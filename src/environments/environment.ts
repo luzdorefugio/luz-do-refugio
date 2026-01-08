@@ -1,4 +1,4 @@
 export const environment = {
-    production: false,
-    apiUrl: 'http://192.168.1.238:8080/api'
+    production: true,
+    apiUrl: 'https://luz-do-refugio-server.onrender.com'
 };

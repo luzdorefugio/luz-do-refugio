@@ -24,6 +24,9 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "css",
+              "allowedCommonJsDependencies": [
+                  "sweetalert2"
+              ],
             "assets": [
               {
                 "glob": "**/*",
@@ -39,7 +42,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
+                  "maximumWarning": "2mb",
                   "maximumError": "1MB"
                 },
                 {

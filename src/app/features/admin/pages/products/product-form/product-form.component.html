@@ -1,0 +1,216 @@
+<div class="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm flex justify-center items-center p-4 animate-[fadeIn_0.2s]">
+
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden animate-[scaleIn_0.2s] flex flex-col max-h-[90vh]">
+
+        <div class="bg-[var(--lumiere-cream)] p-4 border-b border-gray-100 flex justify-between items-center sticky top-0 z-10">
+            <h2 class="font-serif-title font-bold text-[var(--lumiere-bordeaux)] text-lg">
+                {{ product ? 'Editar Produto' : 'Novo Produto' }}
+            </h2>
+            <button (click)="onCancel()" class="text-gray-400 hover:text-black text-xl px-2">✕</button>
+        </div>
+
+        <div class="flex border-b border-gray-200 bg-white overflow-x-auto">
+            <button type="button" (click)="activeTab.set('details')"
+                    class="flex-1 py-3 px-4 text-sm font-bold transition-all border-b-2 whitespace-nowrap"
+                    [ngClass]="activeTab() === 'details' ? 'border-[var(--lumiere-bordeaux)] text-[var(--lumiere-bordeaux)] bg-gray-50' : 'border-transparent text-gray-400 hover:text-gray-600'">
+                📝 Detalhes Gerais
+            </button>
+
+            <button type="button" (click)="activeTab.set('scent')"
+                    class="flex-1 py-3 px-4 text-sm font-bold transition-all border-b-2 whitespace-nowrap"
+                    [ngClass]="activeTab() === 'scent' ? 'border-[var(--lumiere-bordeaux)] text-[var(--lumiere-bordeaux)] bg-gray-50' : 'border-transparent text-gray-400 hover:text-gray-600'">
+                👃 Perfil Olfativo
+            </button>
+
+            <button type="button" (click)="activeTab.set('recipe')"
+                    class="flex-1 py-3 px-4 text-sm font-bold transition-all border-b-2 whitespace-nowrap"
+                    [ngClass]="activeTab() === 'recipe' ? 'border-[var(--lumiere-bordeaux)] text-[var(--lumiere-bordeaux)] bg-gray-50' : 'border-transparent text-gray-400 hover:text-gray-600'">
+                🧪 Receita & Custos
+            </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-white">
+
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+                <div [class.hidden]="activeTab() !== 'details'" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="label-lumiere">SKU (Referência)</label>
+                                <input formControlName="sku" type="text" class="input-lumiere w-full font-mono uppercase text-sm" placeholder="ex: VELA-001">
+                            </div>
+                            <div>
+                                <label class="label-lumiere">Nome do Produto</label>
+                                <input formControlName="name" type="text" class="input-lumiere w-full">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="label-lumiere">Preço Venda (€)</label>
+                                    <input formControlName="price" type="number" step="0.01" class="input-lumiere w-full">
+                                </div>
+                                <div>
+                                    <label class="label-lumiere">Stock</label>
+                                    <input formControlName="stock" type="number" class="input-lumiere w-full">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="label-lumiere">Imagem</label>
+                                <div class="mt-2 h-28 bg-gray-50 rounded border border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative group">
+                                    @if (form.get('sku')?.value) {
+                                    <img [src]="'shop/' + form.get('sku')?.value + '_1.jpg'"
+                                         class="h-full w-full object-cover opacity-80"
+                                         onerror="this.style.display='none'">
+                                    }
+                                    <span class="absolute text-xs text-gray-500 bg-white/80 px-2 py-1 rounded">
+                                        Nome esperado: {{ form.get('sku')?.value }}_1.jpg
+                                    </span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="label-lumiere">Descrição</label>
+                                <textarea formControlName="description" rows="3" class="input-lumiere w-full text-sm"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 pt-2 p-4 bg-gray-50 rounded border border-gray-100">
+                        <input formControlName="activeShop" type="checkbox" id="activeShop" class="accent-[var(--lumiere-gold)] w-5 h-5">
+                        <label for="activeShop" class="text-sm font-medium text-gray-700">Produto Ativo (Visível na Loja)</label>
+                    </div>
+                </div>
+
+                <div [class.hidden]="activeTab() !== 'scent'" class="space-y-6 animate-[fadeIn_0.3s]">
+
+                    <div class="bg-yellow-50/50 p-4 rounded-lg border border-yellow-100 text-sm text-yellow-800 mb-4 flex gap-2">
+                        <span>ℹ️</span>
+                        <p>Estas informações aparecerão na página do produto para ajudar o cliente a escolher o aroma.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6">
+
+                        <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm space-y-4">
+                            <h3 class="font-bold text-gray-700 text-sm uppercase tracking-wide border-b pb-2">Pirâmide Olfativa</h3>
+
+                            <div class="flex items-start gap-3">
+                                <span class="text-xl w-8 text-center pt-1" title="Topo">🌬️</span>
+                                <div class="flex-1">
+                                    <label class="label-lumiere">Notas de Topo (Saída)</label>
+                                    <input formControlName="scentTop" type="text" class="input-lumiere w-full" placeholder="Ex: Limão, Bergamota...">
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <span class="text-xl w-8 text-center pt-1" title="Coração">💖</span>
+                                <div class="flex-1">
+                                    <label class="label-lumiere">Notas de Coração (Corpo)</label>
+                                    <input formControlName="scentHeart" type="text" class="input-lumiere w-full" placeholder="Ex: Rosa, Lavanda...">
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3">
+                                <span class="text-xl w-8 text-center pt-1" title="Fundo">🪵</span>
+                                <div class="flex-1">
+                                    <label class="label-lumiere">Notas de Fundo (Base)</label>
+                                    <input formControlName="scentBase" type="text" class="input-lumiere w-full" placeholder="Ex: Baunilha, Sândalo...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="label-lumiere">Tempo de Queima</label>
+                                <input formControlName="burnTime" type="text" class="input-lumiere w-full" placeholder="Ex: ± 25 Horas">
+                            </div>
+
+                            <div>
+                                <label class="label-lumiere">Intensidade (1 a 5)</label>
+                                <div class="flex items-center gap-4 mt-2">
+                                    <input type="range" formControlName="intensity" min="1" max="5" step="1"
+                                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[var(--lumiere-bordeaux)]">
+                                    <span class="font-bold text-lg text-[var(--lumiere-bordeaux)] w-8 text-center border border-gray-200 rounded bg-gray-50">
+                                        {{ form.get('intensity')?.value }}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-gray-400 px-1 mt-1">
+                                    <span>Suave</span>
+                                    <span>Forte</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div [class.hidden]="activeTab() !== 'recipe'" class="space-y-6">
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+                            <label class="text-[10px] font-bold text-yellow-800 uppercase tracking-wider block mb-1">Custo Estimado (€)</label>
+                            <input formControlName="estimatedCost" type="number" step="0.01" class="bg-transparent text-right font-bold text-lg w-full text-yellow-900 border-none p-0 focus:ring-0">
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <label class="text-[10px] font-bold text-blue-800 uppercase tracking-wider block mb-1">Produção Máx.</label>
+                            <input formControlName="maxProduction" type="number" readonly class="bg-transparent text-right font-bold text-lg w-full text-blue-900 border-none p-0 focus:ring-0">
+                        </div>
+                    </div>
+
+                    <hr class="border-gray-100">
+
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200" [formGroup]="recipeForm">
+                        <h3 class="text-sm font-bold text-gray-700 mb-3">Adicionar Material</h3>
+                        <div class="flex gap-2">
+                            <select formControlName="materialId" class="input-lumiere flex-1 text-sm bg-white">
+                                <option value="">Escolher Material...</option>
+                                @for (m of materials(); track m.id) {
+                                <option [value]="m.id">{{ m.name }} ({{ m.unit }})</option>
+                                }
+                            </select>
+                            <input formControlName="quantity" type="number" placeholder="Qtd" class="input-lumiere w-24 text-center">
+                            <button type="button" (click)="addMaterialToRecipe()" [disabled]="recipeForm.invalid"
+                                    class="bg-[var(--lumiere-bordeaux)] text-white px-4 rounded font-bold hover:opacity-90 disabled:opacity-50">
+                                +
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">Composição</h3>
+                        @if (recipeItems().length === 0) {
+                        <div class="text-center py-8 text-gray-400 border-2 border-dashed rounded-lg">Receita vazia.</div>
+                        } @else {
+                        <ul class="divide-y divide-gray-100 border rounded-lg overflow-hidden">
+                            @for (item of recipeItems(); track $index) {
+                            <li class="p-3 flex justify-between items-center bg-white hover:bg-gray-50">
+                                <div>
+                                    <span class="font-bold text-sm text-gray-700 block">{{ item.materialName }}</span>
+                                    <span class="text-[10px] text-gray-400">Custo: {{ item.costPerUnit | currency:'EUR' }}</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="font-bold text-sm">{{ item.quantity }} {{ item.unit }}</span>
+                                    <span class="text-[10px] text-gray-500 w-16 text-right">= {{ (item.quantity * (item.costPerUnit || 0)) | currency:'EUR' }}</span>
+                                    <button type="button" (click)="removeMaterial($index)" class="text-red-400 hover:text-red-600 font-bold">🗑</button>
+                                </div>
+                            </li>
+                            }
+                        </ul>
+                        }
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-gray-100 flex justify-end gap-3 mt-4 bg-white sticky bottom-0">
+                    <button type="button" (click)="onCancel()" class="px-5 py-2 border border-gray-300 rounded text-gray-600 hover:bg-gray-50 text-sm">Cancelar</button>
+                    <button type="submit" [disabled]="isLoading || form.invalid" class="btn-primary-lumiere py-2 px-6 shadow-md flex items-center gap-2">
+                        @if (isLoading) { <span class="animate-spin">⏳</span> }
+                        <span>{{ product ? 'Guardar' : 'Criar' }}</span>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

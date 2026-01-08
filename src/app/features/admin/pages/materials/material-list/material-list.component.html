@@ -1,0 +1,96 @@
+<div class="p-8">
+
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-serif-title font-bold text-[var(--lumiere-bordeaux)]">Materiais</h1>
+            <p class="text-gray-500">Gere o stock de cera, pavios e essências.</p>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                <input type="checkbox" (change)="toggleShowInactive()" class="rounded border-gray-300 text-[var(--lumiere-bordeaux)]">
+                Mostrar Inativos
+            </label>
+            <button (click)="openCreate()" class="btn-primary-lumiere flex items-center gap-2">
+                <i data-feather="plus"></i> Novo Material
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
+
+        @if (isLoading()) {
+        <div class="p-10 text-center text-gray-400">A carregar...</div>
+        } @else {
+        <table class="w-full text-left">
+            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold">
+            <tr>
+                <th class="p-4">Nome</th>
+                <th class="p-4">Stock</th>
+                <th class="p-4">Alerta</th>
+                <th class="p-4 text-right">Ações</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+            @for (item of visibleMaterials(); track item.id) {
+            <tr class="transition-colors"
+                [class]="!item.active ? 'bg-gray-50 opacity-60 grayscale' : 'hover:bg-gray-50'">
+
+                <td class="p-4 font-medium text-gray-800">
+                    <div class="flex items-center gap-2">
+                        {{ item.name }}
+                        @if(!item.active) {
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-200 text-gray-500 border border-gray-300">
+                                INATIVO
+                            </span>
+                        }
+                    </div>
+                </td>
+
+                <td class="p-4">
+                    <span [class]="item.active && item.quantityOnHand <= (item.minStockLevel || 0) ? 'text-red-600 font-bold' : 'text-gray-600'">
+                        {{ item.quantityOnHand }} {{ item.unit }}
+                    </span>
+                </td>
+
+                <td class="p-4 text-xs text-gray-500">
+                    @if(item.active && item.quantityOnHand <= (item.minStockLevel || 0)) {
+                    <span class="bg-red-100 text-red-600 px-2 py-1 rounded">Stock Baixo!</span>
+                    } @else {
+                    Min: {{ item.minStockLevel }}
+                    }
+                </td>
+
+                <td class="p-4 text-right space-x-2">
+                    @if(item.active) {
+                    <button (click)="openPurchaseModal(item)" class="text-green-600 hover:bg-green-50 p-1 rounded" title="Comprar">
+                        <i data-feather="shopping-cart" class="w-4 h-4"></i>
+                    </button>
+                    }
+
+                    <button (click)="openEdit(item)" class="text-gray-400 hover:text-[var(--lumiere-gold)]">
+                        ✎
+                    </button>
+
+                    @if(item.active) {
+                    <button (click)="deleteMaterial(item.id!)" class="text-gray-400 hover:text-red-500" title="Desativar">
+                        🗑
+                    </button>
+                    } @else {
+                    <button (click)="restoreMaterial(item.id!)" class="text-gray-400 hover:text-green-500" title="Reativar">
+                        ♻️
+                    </button>
+                    }
+                </td>
+            </tr>
+            }
+            </tbody>
+        </table>
+        }
+    </div>
+
+    @if (isModalOpen()) {
+    <app-material-form [material]="selectedMaterial()" (close)="handleModalClose($event)">
+    </app-material-form>
+    }
+</div>

@@ -1,0 +1,209 @@
+<div class="space-y-8 animate-[fadeIn_0.5s]">
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-serif-title font-bold text-[var(--lumiere-bordeaux)]">
+                Olá, {{ auth.currentUser()?.name || 'Gestor' }} 👋
+            </h1>
+            <p class="text-gray-500">Aqui está o resumo da tua loja hoje.</p>
+        </div>
+        <a routerLink="/loja" target="_blank" class="btn-ghost text-sm flex items-center gap-2">
+            <span>Ver Loja Online</span>
+            <i data-feather="external-link" class="w-4 h-4"></i>
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[var(--lumiere-gold)] flex items-center justify-between group hover:shadow-md transition-all">
+            <div>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Faturado</p>
+                <h3 class="text-2xl font-bold text-[var(--lumiere-bordeaux)]">
+                    {{ totalRevenue() | currency:'EUR' }}
+                </h3>
+            </div>
+            <div class="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center text-[var(--lumiere-gold)] group-hover:scale-110 transition-transform">
+                <i data-feather="dollar-sign"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-yellow-500 flex items-center justify-between group hover:shadow-md transition-all">
+            <div>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Pendentes</p>
+                <h3 class="text-2xl font-bold text-gray-800">
+                    {{ pendingOrdersCount() }}
+                </h3>
+            </div>
+            <div class="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-600 group-hover:scale-110 transition-transform">
+                <i data-feather="clock"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[var(--lumiere-bordeaux)] flex items-center justify-between group hover:shadow-md transition-all">
+            <div>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Pedidos</p>
+                <h3 class="text-2xl font-bold text-gray-800">
+                    {{ totalOrdersCount() }}
+                </h3>
+            </div>
+            <div class="w-12 h-12 rounded-full bg-pink-50 flex items-center justify-center text-[var(--lumiere-bordeaux)] group-hover:scale-110 transition-transform">
+                <i data-feather="shopping-bag"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-[fadeIn_0.5s]">
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[var(--lumiere-bordeaux)] flex justify-between items-start">
+            <div>
+                <p class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Investido em Matéria</p>
+                @if (isLoading()) { <div class="h-8 w-24 bg-gray-100 animate-pulse rounded"></div> }
+                @else {
+                <p class="text-2xl font-serif-title font-bold text-gray-800">
+                    {{ stats().totalInvestedMaterials | currency:'EUR' }}
+                </p>
+                }
+            </div>
+            <div class="w-10 h-10 rounded-full bg-red-50 text-[var(--lumiere-bordeaux)] flex items-center justify-center text-xl">
+                📦
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[var(--lumiere-gold)] flex justify-between items-start">
+            <div>
+                <p class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Stock p/ Venda</p>
+                @if (isLoading()) { <div class="h-8 w-24 bg-gray-100 animate-pulse rounded"></div> }
+                @else {
+                <p class="text-2xl font-serif-title font-bold text-gray-800">
+                    {{ stats().potentialRevenue | currency:'EUR' }}
+                </p>
+                }
+            </div>
+            <div class="w-10 h-10 rounded-full bg-yellow-50 text-[var(--lumiere-gold)] flex items-center justify-center text-xl">
+                🕯️
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-600 flex justify-between items-start">
+            <div>
+                <p class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Lucro Estimado</p>
+                @if (isLoading()) { <div class="h-8 w-24 bg-gray-100 animate-pulse rounded"></div> }
+                @else {
+                <p class="text-2xl font-serif-title font-bold text-green-700">
+                    +{{ stats().estimatedProfit | currency:'EUR' }}
+                </p>
+                }
+            </div>
+            <div class="w-10 h-10 rounded-full bg-green-50 text-green-700 flex items-center justify-center text-xl">
+                💰
+            </div>
+        </div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-full">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                    <i data-feather="activity" class="w-4 h-4 text-[var(--lumiere-gold)]"></i>
+                    Encomendas Recentes
+                </h3>
+                <a routerLink="/admin/encomendas" class="text-xs font-bold text-[var(--lumiere-bordeaux)] hover:underline">VER TODAS →</a>
+            </div>
+
+            @if (isLoading()) {
+            <div class="p-8 text-center text-gray-400">A carregar...</div>
+            } @else if (recentOrders().length === 0) {
+            <div class="p-8 text-center text-gray-400">Sem vendas ainda.</div>
+            } @else {
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                    <tr>
+                        <th class="p-4">Cliente</th>
+                        <th class="p-4">Total</th>
+                        <th class="p-4">Estado</th>
+                        <th class="p-4 text-right">Data</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                    @for (order of recentOrders(); track order.id) {
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-4 font-medium">{{ order.customerName }}</td>
+                            <td class="p-4 font-bold text-gray-700">{{ order.totalAmount | currency:'EUR' }}</td>
+                            <td class="p-4">
+                                    <span [class]="'px-2 py-1 rounded text-xs font-bold ' + getStatusColor(order.status)">
+                                        {{ order.status }}
+                                    </span>
+                            </td>
+                            <td class="p-4 text-right text-gray-400 text-xs">
+                                {{ order.createdAt | date:'dd/MM HH:mm' }}
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            }
+        </div>
+
+        <div class="h-fit space-y-6">
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 class="font-bold text-gray-800 mb-4">Ações Rápidas</h3>
+                <div class="space-y-3">
+                    <button routerLink="/admin/produtos" class="w-full text-left px-4 py-3 rounded-lg bg-gray-50 hover:bg-[var(--lumiere-cream)] text-gray-700 hover:text-[var(--lumiere-bordeaux)] transition-colors flex items-center gap-3">
+                        <i data-feather="plus-circle" class="w-4 h-4"></i>
+                        Novo Produto
+                    </button>
+                    <button routerLink="/admin/materiais" class="w-full text-left px-4 py-3 rounded-lg bg-gray-50 hover:bg-[var(--lumiere-cream)] text-gray-700 hover:text-[var(--lumiere-bordeaux)] transition-colors flex items-center gap-3">
+                        <i data-feather="layers" class="w-4 h-4"></i>
+                        Gerir Materiais
+                    </button>
+                    <button routerLink="/admin/encomendas" class="w-full text-left px-4 py-3 rounded-lg bg-gray-50 hover:bg-[var(--lumiere-cream)] text-gray-700 hover:text-[var(--lumiere-bordeaux)] transition-colors flex items-center gap-3">
+                        <i data-feather="list" class="w-4 h-4"></i>
+                        Ver Todas as Encomendas
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+            <h3 class="font-serif-title font-bold text-gray-800 text-lg mb-4">Vendas por Canal</h3>
+
+            <div class="flex-1 min-h-[300px] relative flex items-center justify-center">
+                @if (hasChartData()) {
+                <canvas baseChart
+                        [data]="doughnutChartData"
+                        [type]="doughnutChartType"
+                        [options]="doughnutChartOptions">
+                </canvas>
+                } @else {
+                <div class="text-center text-gray-400">
+                    <p>Ainda não há dados suficientes.</p>
+                </div>
+                }
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h3 class="font-serif-title font-bold text-gray-800 text-lg mb-4">Top Produtos</h3>
+            <p class="text-gray-400 text-sm">Em breve...</p>
+        </div>
+
+    </div>
+
+    <div class="bg-gradient-to-r from-[var(--lumiere-bordeaux)] to-[#4a1a2c] rounded-xl p-8 text-white shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 relative overflow-hidden">
+
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+
+        <div class="relative z-10">
+            <h3 class="font-serif-title text-2xl mb-1">Luz do Refúgio</h3>
+            <p class="text-white/80 italic">"Que a tua luz ilumine cada encomenda enviada."</p>
+        </div>
+
+        <div class="h-1 w-24 bg-[var(--lumiere-gold)] rounded-full opacity-50 md:rotate-0 rotate-90"></div>
+    </div>
+
+</div>

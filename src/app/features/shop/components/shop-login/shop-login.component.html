@@ -1,0 +1,165 @@
+<div class="min-h-screen flex items-center justify-center bg-[#f9f5f0] p-4">
+
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-4xl w-full flex flex-col md:flex-row min-h-[600px] animate-[fadeIn_0.5s]">
+
+        <div class="md:w-1/2 bg-[#5c0a0a] text-[#f9f5f0] relative flex flex-col justify-center p-12 overflow-hidden">
+            <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, #d4af37 1px, transparent 1px); background-size: 20px 20px;"></div>
+
+            <div class="relative z-10 text-center md:text-left">
+                <h2 class="font-serif-title text-4xl font-bold mb-4">
+                    <span class="text-[#d4af37]">L</span>uz do Refúgio
+                </h2>
+                <p class="text-lg opacity-90 leading-relaxed mb-8">
+                    Junte-se à nossa comunidade e traga mais luz e aroma para os seus momentos especiais.
+                </p>
+
+                <div class="space-y-4 text-sm font-medium opacity-80">
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#d4af37]">✔</span> Acompanhe as suas encomendas
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#d4af37]">✔</span> Acesso a novidades exclusivas
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#d4af37]">✔</span> Compra mais rápida
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-white">
+
+            <div class="mb-8 text-center">
+                <h3 class="text-2xl font-bold text-[#5c0a0a] mb-2">
+                    {{ isLoginMode() ? 'Bem-vindo de volta' : 'Criar Conta' }}
+                </h3>
+                <p class="text-sm text-gray-500">
+                    {{ isLoginMode() ? 'Introduza os seus dados para entrar.' : 'Preencha o formulário para se registar.' }}
+                </p>
+            </div>
+
+            @if (isLoginMode()) {
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4 animate-[fadeIn_0.3s]">
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Email</label>
+                    <input formControlName="email"
+                           type="email"
+                           class="w-full border-b-2 p-2 focus:outline-none transition-colors bg-transparent"
+                           [class.border-red-500]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+                           [class.border-gray-200]="!loginForm.get('email')?.touched"
+                           [class.focus:border-[#d4af37]]="!loginForm.get('email')?.invalid"
+                           placeholder="exemplo@email.com">
+
+                    @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+                    <span class="text-red-500 text-xs mt-1 block">Email inválido ou obrigatório.</span>
+                    }
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Password</label>
+                    <input formControlName="password"
+                           type="password"
+                           class="w-full border-b-2 p-2 focus:outline-none transition-colors bg-transparent"
+                           [class.border-red-500]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                           [class.border-gray-200]="!loginForm.get('password')?.touched"
+                           [class.focus:border-[#d4af37]]="!loginForm.get('password')?.invalid"
+                           placeholder="••••••••">
+
+                    @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+                    <span class="text-red-500 text-xs mt-1 block">Password é obrigatória.</span>
+                    }
+                </div>
+
+                <button type="submit" [disabled]="isLoading()" class="w-full bg-[#5c0a0a] text-white py-3 rounded-lg font-bold hover:bg-[#3d0210] transition-all transform active:scale-95 shadow-md mt-6 flex justify-center items-center gap-2">
+                    @if (isLoading()) { <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> }
+                    Entrar
+                </button>
+            </form>
+            }
+
+            @else {
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4 animate-[fadeIn_0.3s]">
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nome Completo</label>
+                    <input formControlName="name"
+                           type="text"
+                           class="w-full border-b-2 p-2 focus:outline-none transition-colors bg-transparent"
+                           [class.border-red-500]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
+                           [class.border-gray-200]="!registerForm.get('name')?.touched"
+                           [class.focus:border-[#d4af37]]="!registerForm.get('name')?.invalid"
+                           placeholder="O seu nome">
+
+                    @if (registerForm.get('name')?.invalid && registerForm.get('name')?.touched) {
+                    <span class="text-red-500 text-xs mt-1 block">O nome é obrigatório.</span>
+                    }
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Email</label>
+                    <input formControlName="email"
+                           type="email"
+                           class="w-full border-b-2 p-2 focus:outline-none transition-colors bg-transparent"
+                           [class.border-red-500]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+                           [class.border-gray-200]="!registerForm.get('email')?.touched"
+                           [class.focus:border-[#d4af37]]="!registerForm.get('email')?.invalid"
+                           placeholder="exemplo@email.com">
+
+                    @if (registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched) {
+                    <span class="text-red-500 text-xs mt-1 block">O email é obrigatório.</span>
+                    }
+                    @if (registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched) {
+                    <span class="text-red-500 text-xs mt-1 block">Introduza um email válido.</span>
+                    }
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Password</label>
+                        <input formControlName="password"
+                               type="password"
+                               class="w-full border-b-2 p-2 focus:outline-none transition-colors bg-transparent"
+                               [class.border-red-500]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+                               [class.border-gray-200]="!registerForm.get('password')?.touched"
+                               placeholder="••••••">
+
+                        @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+                        <span class="text-red-500 text-xs mt-1 block">Mínimo 6 chars.</span>
+                        }
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Confirmar</label>
+                        <input formControlName="confirmPassword"
+                               type="password"
+                               class="w-full border-b-2 p-2 focus:outline-none transition-colors bg-transparent"
+                               [class.border-red-500]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
+                               [class.border-gray-200]="!registerForm.get('confirmPassword')?.touched"
+                               placeholder="••••••">
+
+                        @if (registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) {
+                        <span class="text-red-500 text-xs mt-1 block">Obrigatório.</span>
+                        }
+                    </div>
+                </div>
+
+                <button type="submit" [disabled]="isLoading()" class="w-full bg-[#d4af37] text-[#5c0a0a] py-3 rounded-lg font-bold hover:bg-[#c4a030] transition-all transform active:scale-95 shadow-md mt-6 flex justify-center items-center gap-2">
+                    @if (isLoading()) { <div class="w-4 h-4 border-2 border-[#5c0a0a] border-t-transparent rounded-full animate-spin"></div> }
+                    Criar Conta
+                </button>
+            </form>
+            }
+
+            <div class="mt-8 text-center pt-6 border-t border-gray-100">
+                <p class="text-sm text-gray-500">
+                    {{ isLoginMode() ? 'Ainda não tem conta?' : 'Já tem conta?' }}
+                    <button (click)="toggleMode()" class="font-bold text-[#5c0a0a] hover:underline ml-1 focus:outline-none">
+                        {{ isLoginMode() ? 'Criar registo' : 'Entrar agora' }}
+                    </button>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>

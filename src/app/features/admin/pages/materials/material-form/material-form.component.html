@@ -1,0 +1,88 @@
+<div class="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm flex justify-center items-center p-4 animate-[fadeIn_0.2s]">
+
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-[scaleIn_0.2s]">
+
+        <div class="bg-[var(--lumiere-cream)] p-4 border-b border-gray-100 flex justify-between items-center">
+            <h2 class="font-serif-title font-bold text-[var(--lumiere-bordeaux)]">
+                {{ material ? 'Editar Material' : 'Novo Material' }}
+            </h2>
+            <button (click)="onCancel()" class="text-gray-400 hover:text-black">✕</button>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6 space-y-4">
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Nome do Material</label>
+                <input formControlName="name" type="text" class="input-lumiere w-full" placeholder="ex: Cera de Soja 100% Natur">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-1">
+                    SKU (Código Único)
+                    <span class="text-xs font-normal text-gray-400 ml-1">(Deixe vazio para gerar auto)</span>
+                </label>
+                <div class="flex gap-2">
+                    <input formControlName="sku" type="text"
+                           class="input-lumiere w-full font-mono uppercase placeholder:normal-case"
+                           placeholder="Auto (ex: CERA-X92B)">
+
+                    <button type="button" (click)="generateSku()"
+                            class="px-3 py-2 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 text-gray-600"
+                            title="Gerar código aleatório agora">
+                        🎲
+                    </button>
+                </div>
+                @if(form.get('sku')?.invalid && form.get('sku')?.touched) {
+                <p class="text-xs text-red-500 mt-1">O SKU é obrigatório (ou gere um automático).</p>
+                }
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Tipo</label>
+                    <select formControlName="type" class="input-lumiere w-full">
+                        <option [ngValue]="null" disabled>Selecione...</option>
+                        @for (t of materialTypes(); track t.key) {
+                            <option [value]="t.key">{{ t.label }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Unidade</label>
+                    <select formControlName="unit" class="input-lumiere w-full">
+                        <option value="KG">Quilogramas (kg)</option>
+                        <option value="G">Gramas (g)</option>
+                        <option value="L">Litros (l)</option>
+                        <option value="ML">Mililitros (ml)</option>
+                        <option value="UN">Unidade (un)</option>
+                        <option value="M">Metros (m)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Stock Atual</label>
+                    <input formControlName="quantityOnHand" type="number" class="input-lumiere w-full">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Stock Mínimo</label>
+                    <input formControlName="minStockLevel" type="number" class="input-lumiere w-full">
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-400 text-right">Será enviado um alerta quando o stock for inferior ao mínimo.</p>
+
+            <div class="pt-4 flex justify-end gap-3 border-t border-gray-50 mt-4">
+                <button type="button" (click)="onCancel()" class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 text-sm font-medium">
+                    Cancelar
+                </button>
+                <button type="submit" [disabled]="isLoading || form.invalid"
+                        class="btn-primary-lumiere py-2 px-6 flex items-center gap-2 text-sm">
+                    @if(isLoading) { <span class="animate-spin">⏳</span> }
+                    <span>{{ material ? 'Guardar Alterações' : 'Criar Material' }}</span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<header class="h-16 bg-white shadow-sm flex items-center justify-between px-6 sticky top-0 z-40">
+
+    <div class="flex items-center gap-4">
+        <h2 class="text-gray-500 text-sm">Painel de Controlo</h2>
+    </div>
+
+    <div class="flex items-center gap-6">
+
+        <button class="relative text-gray-400 hover:text-[var(--lumiere-bordeaux)] transition-colors">
+            <i data-feather="bell" class="w-5 h-5"></i>
+            <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+
+        <div class="h-8 w-px bg-gray-200"></div>
+
+        <div class="flex items-center gap-3">
+            <div class="text-right hidden sm:block">
+                <p class="text-sm font-bold text-gray-700">{{ auth.currentUser()?.name || 'Administrador' }}</p>
+                <p class="text-xs text-gray-500">Super Admin</p>
+            </div>
+
+            <div class="w-10 h-10 rounded-full bg-[var(--lumiere-cream)] flex items-center justify-center text-[var(--lumiere-bordeaux)] font-bold border border-[var(--lumiere-gold)]">
+                {{ auth.currentUser()?.name?.charAt(0) || 'A' }}
+            </div>
+
+            <button (click)="logout()" class="ml-2 text-gray-400 hover:text-red-500" title="Sair">
+                <i data-feather="log-out" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+</header>

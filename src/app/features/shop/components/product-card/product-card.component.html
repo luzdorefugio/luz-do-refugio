@@ -1,0 +1,53 @@
+<div class="candle-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-500 h-full flex flex-col"
+     [class.opacity-90]="product.stock === 0"> <div class="relative overflow-hidden h-64 group cursor-pointer" [routerLink]="['/loja/produto', product.id]">
+
+    <img [src]="'shop/' + product.sku + '_1.jpg'"
+         [alt]="product.name"
+         class="w-full h-full object-cover transition duration-500 group-hover:scale-110"
+         [class.grayscale]="product.stock === 0">
+
+    @if (product.stock === 0) {
+    <div class="absolute inset-0 bg-white/10 backdrop-blur-[1px] flex items-center justify-center z-20 pointer-events-none">
+                <span class="bg-black/80 text-white px-4 py-2 text-xs font-bold uppercase tracking-widest border border-white/20 transform -rotate-6 shadow-lg">
+                    Esgotado
+                </span>
+    </div>
+    }
+
+    <div class="absolute inset-0 bg-[#5c0a0a] bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 z-10">
+        <button class="bg-[#d4af37] text-[#5c0a0a] font-semibold py-2 px-6 rounded-md shadow-lg transform hover:scale-105 transition">
+            Ver Detalhes
+        </button>
+    </div>
+</div>
+
+    <div class="p-6 flex-1 flex flex-col justify-between">
+        <div>
+            <h3 class="text-xl font-semibold title-font text-[#5c0a0a] mb-1">{{ product.name }}</h3>
+
+            @if (product.stock > 0 && product.stock < 5) {
+            <p class="text-[15px] text-orange-600 font-bold uppercase tracking-wide flex items-center gap-1">
+                🔥 Restam apenas {{ product.stock }}
+            </p>
+            }
+        </div>
+
+        <div class="flex justify-between items-center mt-4">
+            <span class="text-lg font-bold text-[#d4af37]">{{ product.salePrice | currency:'EUR' }}</span>
+
+            <button (click)="addToCart($event)"
+                    [disabled]="product.stock === 0"
+                    class="font-semibold transition-all duration-300"
+                    [ngClass]="{
+                        'text-[#5c0a0a] border-b-2 border-[#d4af37] hover:text-[#d4af37] cursor-pointer': product.stock > 0,
+                        'text-gray-400 border-none cursor-not-allowed line-through decoration-1 decoration-gray-300': product.stock === 0
+                    }">
+                @if (product.stock > 0) {
+                    Adicionar +
+                } @else {
+                    Sem Stock
+                }
+            </button>
+        </div>
+    </div>
+</div>

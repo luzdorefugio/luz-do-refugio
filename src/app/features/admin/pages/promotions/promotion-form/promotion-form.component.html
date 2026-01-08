@@ -1,0 +1,121 @@
+<div class="p-6">
+
+    <div class="flex items-center justify-between mb-6 border-b pb-4">
+        <div>
+            <h2 class="font-serif-title text-2xl font-bold text-[var(--lumiere-bordeaux)]">
+                {{ isEditMode ? '✏️ Editar Promoção' : '✨ Nova Promoção' }}
+            </h2>
+            <p class="text-gray-500 text-sm">Preencha os dados abaixo.</p>
+        </div>
+        <button (click)="onCancel()" class="text-gray-400 hover:text-gray-600">
+            ✕
+        </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+
+        <div class="bg-gray-50 p-5 rounded-xl border border-gray-100">
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Identificação</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Código *</label>
+                    <input formControlName="code"
+                           type="text"
+                           placeholder="EX: VERAO2026"
+                           class="w-full p-2 border rounded-lg font-mono uppercase font-bold tracking-wider focus:ring-[var(--lumiere-gold)] focus:border-[var(--lumiere-gold)] disabled:bg-gray-200 disabled:text-gray-500"
+                           (input)="form.get('code')?.setValue(form.get('code')?.value.toUpperCase())">
+                    @if(form.get('code')?.hasError('pattern')) {
+                    <p class="text-red-500 text-xs mt-1">Apenas letras maiúsculas e números.</p>
+                    }
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Descrição</label>
+                    <input formControlName="description" type="text" placeholder="Ex: Campanha de Lançamento" class="w-full p-2 border rounded-lg">
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 p-5 rounded-xl border border-gray-100">
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Desconto</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Tipo</label>
+                    <select formControlName="discountType" class="w-full p-2 border rounded-lg bg-white">
+                        <option value="PERCENTAGE">Percentagem (%)</option>
+                        <option value="FIXED_AMOUNT">Valor Fixo (€)</option>
+                        <option value="FREE_SHIPPING">Envio Grátis</option>
+                    </select>
+                </div>
+
+                @if (!isFreeShipping) {
+                <div class="animate-[fadeIn_0.2s]">
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Valor *</label>
+                    <div class="relative">
+                        <input formControlName="discountValue" type="number" min="0" class="w-full p-2 pl-8 border rounded-lg font-bold bg-white">
+                        <div class="absolute left-3 top-2 text-gray-400 font-bold">
+                            {{ form.get('discountType')?.value === 'PERCENTAGE' ? '%' : '€' }}
+                        </div>
+                    </div>
+                </div>
+                }
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Regra Especial</label>
+                    <select formControlName="specialCondition" class="w-full p-2 border rounded-lg bg-white">
+                        <option value="NONE">Nenhuma</option>
+                        <option value="BUY_2_PAY_1">Leve 2, Pague 1</option>
+                        <option value="BUY_3_PAY_2">Leve 3, Pague 2</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 p-5 rounded-xl border border-gray-100">
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Restrições</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Compra Mínima (€)</label>
+                    <input formControlName="minOrderAmount" type="number" placeholder="Opcional" class="w-full p-2 border rounded-lg bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Limite Total de Usos</label>
+                    <input formControlName="usageLimit" type="number" placeholder="Opcional" class="w-full p-2 border rounded-lg bg-white">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-200">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Data Início</label>
+                    <input formControlName="startDate" type="datetime-local" class="w-full p-2 border rounded-lg bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-1">Data Fim</label>
+                    <input formControlName="endDate" type="datetime-local" class="w-full p-2 border rounded-lg bg-white">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 ml-2">
+            <input type="checkbox" formControlName="active" id="activeCheck" class="w-5 h-5 accent-[var(--lumiere-bordeaux)] cursor-pointer">
+            <label for="activeCheck" class="text-sm font-bold text-gray-700 cursor-pointer select-none">
+                Ativar Promoção
+            </label>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+            <button type="button" (click)="onCancel()" class="px-6 py-2 border rounded-lg hover:bg-gray-50 font-medium text-gray-600 transition-colors">
+                Cancelar
+            </button>
+            <button type="submit" [disabled]="isLoading || form.invalid"
+                    class="btn-primary-lumiere px-6 py-2 rounded-lg shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                @if (isLoading) { <div class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div> }
+                {{ isEditMode ? 'Guardar Alterações' : 'Criar Promoção' }}
+            </button>
+        </div>
+
+    </form>
+</div>

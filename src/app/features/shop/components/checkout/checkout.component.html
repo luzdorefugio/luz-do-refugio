@@ -1,0 +1,449 @@
+<div class="min-h-screen bg-[var(--lumiere-cream)] py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-serif-title font-bold text-[var(--lumiere-bordeaux)]">Finalizar Compra</h1>
+            <a routerLink="/loja" class="text-[var(--lumiere-gold)] hover:underline flex items-center gap-2 font-medium">
+                ← Continuar a Comprar
+            </a>
+        </div>
+
+        <div class="mb-10">
+            <div class="flex justify-between items-center relative max-w-2xl mx-auto">
+                <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-10 transform -translate-y-1/2"></div>
+
+                <div class="flex flex-col items-center gap-2 bg-[var(--lumiere-cream)] px-2">
+                    <button (click)="currentStep() > 1 ? goToStep(1) : null"
+                            [disabled]="currentStep() < 1"
+                            class="w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 transition-colors duration-300"
+                            [class.bg-[var(--lumiere-bordeaux)]]="currentStep() >= 1"
+                            [class.text-white]="currentStep() >= 1"
+                            [class.border-[var(--lumiere-bordeaux)]]="currentStep() >= 1"
+                            [class.border-gray-300]="currentStep() < 1">1</button>
+                    <span class="text-xs font-bold uppercase tracking-wider text-[var(--lumiere-bordeaux)]">Carrinho</span>
+                </div>
+
+                <div class="flex flex-col items-center gap-2 bg-[var(--lumiere-cream)] px-2">
+                    <button (click)="currentStep() > 2 ? goToStep(2) : null"
+                            [disabled]="currentStep() < 2"
+                            class="w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 transition-colors duration-300"
+                            [class.bg-[var(--lumiere-bordeaux)]]="currentStep() >= 2"
+                            [class.text-white]="currentStep() >= 2"
+                            [class.border-[var(--lumiere-bordeaux)]]="currentStep() >= 2"
+                            [class.bg-white]="currentStep() < 2"
+                            [class.border-gray-300]="currentStep() < 2">2</button>
+                    <span class="text-xs font-bold uppercase tracking-wider" [class.text-[var(--lumiere-bordeaux)]]="currentStep() >= 2">Dados</span>
+                </div>
+
+                <div class="flex flex-col items-center gap-2 bg-[var(--lumiere-cream)] px-2">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 transition-colors duration-300"
+                         [class.bg-[var(--lumiere-bordeaux)]]="currentStep() >= 3"
+                         [class.text-white]="currentStep() >= 3"
+                         [class.border-[var(--lumiere-bordeaux)]]="currentStep() >= 3"
+                         [class.bg-white]="currentStep() < 3"
+                         [class.border-gray-300]="currentStep() < 3">3</div>
+                    <span class="text-xs font-bold uppercase tracking-wider" [class.text-[var(--lumiere-bordeaux)]]="currentStep() >= 3">Pagamento</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-xl p-8 border-t-4 border-[var(--lumiere-gold)]">
+
+            @if (currentStep() === 1) {
+            <div class="animate-[fadeIn_0.3s]">
+                <h2 class="text-xl font-bold text-[var(--lumiere-bordeaux)] mb-6">Rever Artigos</h2>
+
+                @if (cartService.cartItems().length === 0) {
+                <div class="text-center py-10">
+                    <p class="text-gray-500 mb-4">O teu carrinho está vazio.</p>
+                    <a routerLink="/loja" class="btn-primary-lumiere inline-block">Ir para a Loja</a>
+                </div>
+                } @else {
+                <div class="overflow-x-auto">
+                    <table class="w-full mb-8">
+                        <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="text-left py-3 px-4 text-gray-500 text-sm font-medium">Produto</th>
+                            <th class="text-center py-3 px-4 text-gray-500 text-sm font-medium">Qtd</th>
+                            <th class="text-right py-3 px-4 text-gray-500 text-sm font-medium">Subtotal</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @for (item of cartService.cartItems(); track item.productId) {
+                        <tr class="border-b border-gray-100 last:border-0">
+                            <td class="py-4 px-4 flex items-center gap-4">
+                                <span class="font-medium text-gray-700">{{ item.name }}</span>
+                            </td>
+                            <td class="py-4 px-4 text-center">
+                                <div class="inline-flex items-center border rounded-md">
+                                    <button class="px-2 py-1 hover:bg-gray-100" (click)="cartService.updateQuantity(item.productId, item.quantity - 1)">-</button>
+                                    <span class="px-2 text-sm font-medium w-8">{{ item.quantity }}</span>
+                                    <button class="px-2 py-1 hover:bg-gray-100" (click)="cartService.updateQuantity(item.productId, item.quantity + 1)">+</button>
+                                </div>
+                            </td>
+                            <td class="py-4 px-4 text-right font-medium text-[var(--lumiere-bordeaux)]">
+                                {{ item.price * item.quantity | currency:'EUR' }}
+                            </td>
+                        </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="text-right mb-8">
+                    <p class="text-gray-500">Total Produtos: <span class="font-bold text-lg text-black">{{ cartService.subTotal() | currency:'EUR' }}</span></p>
+                    <p class="text-xs text-gray-400 mt-1">Os portes serão calculados no passo 3.</p>
+                </div>
+
+                <div class="flex justify-end">
+                    <button (click)="goToStep(2)" class="btn-primary-lumiere">
+                        Avançar para Dados →
+                    </button>
+                </div>
+                }
+            </div>
+            }
+
+            @if (currentStep() === 2) {
+            <div class="animate-[fadeIn_0.3s]">
+                <h2 class="text-xl font-bold text-[var(--lumiere-bordeaux)] mb-6">Os teus Dados</h2>
+
+                <form [formGroup]="checkoutForm">
+                    <div formGroupName="customer" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-gray-700 border-b pb-2">Identificação</h3>
+
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Nome Completo *</label>
+                                <input formControlName="name" type="text" class="input-lumiere"
+                                       [class.border-red-500]="isFieldInvalid('customer.name')" placeholder="O teu nome">
+                                @if (isFieldInvalid('customer.name')) {
+                                <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">O nome é obrigatório.</span>
+                                }
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Email *</label>
+                                <input formControlName="email" type="email" class="input-lumiere"
+                                       [class.border-red-500]="isFieldInvalid('customer.email')" placeholder="email@exemplo.com">
+                                @if (isFieldInvalid('customer.email')) {
+                                <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">Email inválido ou em falta.</span>
+                                }
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Telemóvel *</label>
+                                <input formControlName="phone" type="text" class="input-lumiere"
+                                       [class.border-red-500]="isFieldInvalid('customer.phone')">
+                                @if (isFieldInvalid('customer.phone')) {
+                                <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">Contacto obrigatório.</span>
+                                }
+                            </div>
+
+                            <div class="pt-2">
+                                <label class="flex items-center gap-2 cursor-pointer select-none">
+                                    <input formControlName="hasNif" type="checkbox" class="w-4 h-4 text-[var(--lumiere-bordeaux)] rounded focus:ring-[var(--lumiere-gold)]">
+                                    <span class="text-sm text-gray-700">Quero incluir NIF na fatura</span>
+                                </label>
+                                @if (checkoutForm.get('customer.hasNif')?.value) {
+                                <div class="mt-2 animate-[fadeIn_0.2s]">
+                                    <input formControlName="nif" type="text" class="input-lumiere" placeholder="Número de Contribuinte">
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-gray-700 border-b pb-2">Morada de Envio</h3>
+
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">Rua e Número *</label>
+                                <input formControlName="address" type="text" class="input-lumiere"
+                                       [class.border-red-500]="isFieldInvalid('customer.address')" placeholder="Rua das Flores, nº 10">
+                                @if (isFieldInvalid('customer.address')) {
+                                <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">Morada obrigatória.</span>
+                                }
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-1">Código Postal *</label>
+                                    <input formControlName="zipCode" type="text" class="input-lumiere"
+                                           [class.border-red-500]="isFieldInvalid('customer.zipCode')" placeholder="0000-000">
+                                    @if (isFieldInvalid('customer.zipCode')) {
+                                    <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">Obrigatório.</span>
+                                    }
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-1">Cidade *</label>
+                                    <input formControlName="city" type="text" class="input-lumiere"
+                                           [class.border-red-500]="isFieldInvalid('customer.city')" placeholder="Lisboa">
+                                    @if (isFieldInvalid('customer.city')) {
+                                    <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">Obrigatório.</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="pt-4">
+                                <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-600 select-none">
+                                    <input formControlName="billingSameAsShipping" type="checkbox" class="w-4 h-4 text-[var(--lumiere-bordeaux)] rounded focus:ring-[var(--lumiere-gold)]">
+                                    Faturação igual à morada de envio?
+                                </label>
+                            </div>
+
+                            @if (authService.currentUser()) {
+                            <div class="col-span-1 md:col-span-2 mt-4 animate-[fadeIn_0.5s]">
+                                <label class="flex items-start gap-3 p-4 border border-[#d4af37]/30 bg-[#f9f5f0] rounded-lg cursor-pointer hover:bg-[#fdfbf7] transition-colors">
+                                    <div class="flex items-center h-5">
+                                        <input type="checkbox" formControlName="saveToProfile"
+                                               class="w-5 h-5 text-[var(--lumiere-bordeaux)] border-gray-300 rounded focus:ring-[var(--lumiere-gold)]">
+                                    </div>
+                                    <div class="text-sm">
+                                        <span class="font-bold text-[var(--lumiere-bordeaux)]">Guardar estes dados no meu perfil?</span>
+                                        <p class="text-gray-500 text-xs mt-1">
+                                            Atualiza a tua morada e contacto para a próxima compra.
+                                        </p>
+                                    </div>
+                                </label>
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between mt-10 pt-6 border-t border-gray-100">
+                        <button type="button" (click)="goToStep(1)" class="text-gray-500 hover:text-black font-medium">
+                            ← Voltar
+                        </button>
+                        <button type="button" (click)="goToStep(3)" class="btn-primary-lumiere">
+                            Seguinte: Envio e Pagamento →
+                        </button>
+                    </div>
+                </form>
+            </div>
+            }
+
+            @if (currentStep() === 3) {
+            <div class="animate-[fadeIn_0.3s]">
+                <h2 class="text-xl font-bold text-[var(--lumiere-bordeaux)] mb-6">Resumo & Pagamento</h2>
+
+                <div class="flex flex-col lg:flex-row gap-10">
+
+                    <div class="lg:w-5/12 order-2 lg:order-1">
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm sticky top-6">
+                            <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">Resumo do Pedido</h3>
+
+                            <div class="space-y-3 mb-4 pb-4 border-b border-gray-200 max-h-60 overflow-y-auto custom-scrollbar pr-2">
+                                @for (item of cartService.cartItems(); track item.productId) {
+                                <div class="flex justify-between text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-gray-600 font-medium">{{ item.name }}</span>
+                                        <span class="text-xs text-gray-400 bg-white border px-1.5 rounded">x{{ item.quantity }}</span>
+                                    </div>
+                                    <span class="font-medium text-gray-800">{{ item.price * item.quantity | currency:'EUR' }}</span>
+                                </div>
+                                }
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-500">Subtotal</span>
+                                    <span class="font-medium">{{ cartService.subTotal() | currency:'EUR' }}</span>
+                                </div>
+
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-500">Envio ({{ selectedShipping()?.name }})</span>
+                                    <span class="font-medium">
+                                        @if (currentShippingCost() === 0) {
+                                            <span class="text-green-600 font-bold text-xs uppercase bg-green-50 px-2 py-0.5 rounded">Grátis</span>
+                                        } @else {
+                                            {{ currentShippingCost() | currency:'EUR' }}
+                                        }
+                                    </span>
+                                </div>
+
+                                @if (discountAmount() > 0) {
+                                <div class="flex justify-between text-sm text-green-600 font-medium bg-green-50 p-2 rounded border border-green-100">
+                                    <span class="flex items-center gap-1">🏷️ Desconto ({{ couponCode() }})</span>
+                                    <span>-{{ discountAmount() | currency:'EUR' }}</span>
+                                </div>
+                                }
+                            </div>
+
+                            <div class="flex justify-between items-center text-xl font-serif-title font-bold text-[var(--lumiere-bordeaux)] pt-4 border-t border-gray-200 mt-4">
+                                <span>Total Final</span>
+                                <span>{{ totalAmount() | currency:'EUR' }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:w-7/12 space-y-8 order-1 lg:order-2">
+
+                        <div>
+                            <h3 class="font-bold text-gray-700 mb-4 flex items-center gap-2">
+                                <span class="bg-[var(--lumiere-bordeaux)] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">1</span>
+                                Método de Envio
+                            </h3>
+
+                            <div class="space-y-3">
+                                @for (method of shippingMethods(); track method.id) {
+                                <div (click)="selectShipping(method)"
+                                     class="group p-4 border rounded-xl cursor-pointer flex justify-between items-center transition-all duration-200 hover:shadow-md"
+                                     [class.border-[var(--lumiere-gold)]]="selectedShipping()?.id === method.id"
+                                     [class.bg-[#fcfbf7]]="selectedShipping()?.id === method.id"
+                                     [class.border-gray-200]="selectedShipping()?.id !== method.id">
+
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 transition-colors"
+                                             [class.border-[var(--lumiere-bordeaux)]]="selectedShipping()?.id === method.id"
+                                             [class.border-gray-300]="selectedShipping()?.id !== method.id">
+                                            @if (selectedShipping()?.id === method.id) {
+                                            <div class="w-2.5 h-2.5 rounded-full bg-[var(--lumiere-bordeaux)]"></div>
+                                            }
+                                        </div>
+
+                                        <div>
+                                            <p class="font-bold text-gray-800 group-hover:text-[var(--lumiere-bordeaux)] transition-colors">{{ method.name }}</p>
+                                            <p class="text-xs text-gray-500">{{ method.description }}</p>
+                                        </div>
+                                    </div>
+
+                                    <span class="font-bold text-sm" [class.text-[var(--lumiere-bordeaux)]]="selectedShipping()?.id === method.id">
+                                        {{ method.price === 0 ? 'Grátis' : (method.price | currency:'EUR') }}
+                                    </span>
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <form [formGroup]="checkoutForm">
+                            <div formGroupName="payment">
+                                <h3 class="font-bold text-gray-700 mb-4 flex items-center gap-2 mt-8">
+                                    <span class="bg-[var(--lumiere-bordeaux)] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                                    Pagamento & Descontos
+                                </h3>
+
+                                <div class="space-y-3">
+
+                                    <label class="flex items-center gap-4 p-4 border rounded-xl cursor-pointer transition-all bg-white shadow-sm hover:shadow-md"
+                                           [class.border-[var(--lumiere-bordeaux)]]="checkoutForm.get('payment.paymentMethod')?.value === 'MBWAY'"
+                                           [class.bg-[#fcfbf7]]="checkoutForm.get('payment.paymentMethod')?.value === 'MBWAY'"
+                                           [class.border-gray-200]="checkoutForm.get('payment.paymentMethod')?.value !== 'MBWAY'">
+
+                                        <input type="radio" formControlName="paymentMethod" value="MBWAY" class="hidden">
+
+                                        <div class="w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 transition-colors"
+                                             [class.border-gray-300]="checkoutForm.get('payment.paymentMethod')?.value !== 'MBWAY'"
+                                             [class.border-[var(--lumiere-bordeaux)]]="checkoutForm.get('payment.paymentMethod')?.value === 'MBWAY'">
+                                            @if (checkoutForm.get('payment.paymentMethod')?.value === 'MBWAY') {
+                                            <div class="w-2.5 h-2.5 bg-[var(--lumiere-bordeaux)] rounded-full"></div>
+                                            }
+                                        </div>
+
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-2xl">📱</span>
+                                            <span class="font-medium text-gray-800">MB WAY</span>
+                                        </div>
+                                    </label>
+
+                                    <label class="flex items-center gap-4 p-4 border rounded-xl cursor-pointer transition-all bg-white shadow-sm hover:shadow-md"
+                                           [class.border-[var(--lumiere-bordeaux)]]="checkoutForm.get('payment.paymentMethod')?.value === 'TRANSFER'"
+                                           [class.bg-[#fcfbf7]]="checkoutForm.get('payment.paymentMethod')?.value === 'TRANSFER'"
+                                           [class.border-gray-200]="checkoutForm.get('payment.paymentMethod')?.value !== 'TRANSFER'">
+
+                                        <input type="radio" formControlName="paymentMethod" value="TRANSFER" class="hidden">
+
+                                        <div class="w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 transition-colors"
+                                             [class.border-gray-300]="checkoutForm.get('payment.paymentMethod')?.value !== 'TRANSFER'"
+                                             [class.border-[var(--lumiere-bordeaux)]]="checkoutForm.get('payment.paymentMethod')?.value === 'TRANSFER'">
+
+                                            @if (checkoutForm.get('payment.paymentMethod')?.value === 'TRANSFER') {
+                                            <div class="w-2.5 h-2.5 bg-[var(--lumiere-bordeaux)] rounded-full"></div>
+                                            }
+                                        </div>
+
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-2xl">🏦</span>
+                                            <span class="font-medium text-gray-800">Transferência Bancária</span>
+                                        </div>
+                                    </label>
+
+                                    @if (isFieldInvalid('payment.paymentMethod')) {
+                                    <span class="text-xs text-red-500 block mt-1 px-1">Por favor, escolha um método de pagamento.</span>
+                                    }
+                                </div>
+
+                                <div class="mt-8 pt-6 border-t border-gray-100">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">Tens um Código Promocional?</label>
+                                    <div class="flex gap-2 relative">
+                                        <input
+                                            [disabled]="couponApplied()"
+                                            [value]="couponCode()"
+                                            (input)="couponCode.set($any($event.target).value)"
+                                            (keyup.enter)="applyCoupon()"
+                                            type="text"
+                                            class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:border-[var(--lumiere-gold)] outline-none uppercase font-bold tracking-wider disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                                            placeholder="Ex: VERAO2026"
+                                            [class.border-red-500]="errorMessage()">
+
+                                        @if (!couponApplied()) {
+                                        <button type="button"
+                                                (click)="applyCoupon()"
+                                                [disabled]="!couponCode() || isLoadingCoupon()"
+                                                class="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-black text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-w-[100px]">
+                                            @if (isLoadingCoupon()) {
+                                            <span class="animate-pulse">...</span>
+                                            } @else {
+                                            Aplicar
+                                            }
+                                        </button>
+                                        } @else {
+                                        <button type="button"
+                                                (click)="removeCoupon()"
+                                                class="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                                                title="Remover Cupão">
+                                            ✕
+                                        </button>
+                                        }
+                                    </div>
+
+                                    @if (errorMessage()) {
+                                    <p class="text-xs text-red-500 mt-2 animate-[fadeIn_0.2s] flex items-center gap-1">
+                                        ⚠️ {{ errorMessage() }}
+                                    </p>
+                                    }
+                                    @if (couponApplied()) {
+                                    <p class="text-xs text-green-600 mt-2 animate-[fadeIn_0.2s] flex items-center gap-1 font-bold">
+                                        ✅ Código aplicado com sucesso!
+                                    </p>
+                                    }
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-10 pt-6 border-t border-gray-100">
+                    <button type="button" (click)="goToStep(2)" class="text-gray-500 hover:text-black font-medium flex items-center gap-2">
+                        <span>←</span> Voltar aos Dados
+                    </button>
+
+                    <button (click)="confirmOrder()"
+                            [disabled]="isLoading()"
+                            class="bg-[var(--lumiere-bordeaux)] text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-[#3d0210] transition-all transform active:scale-95 flex items-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none">
+                        @if (isLoading()) {
+                        <div class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                        <span>A PROCESSAR...</span>
+                        } @else {
+                        <span>CONFIRMAR ENCOMENDA</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        }
+                    </button>
+                </div>
+            </div>
+            }
+
+        </div>
+    </div>
+</div>

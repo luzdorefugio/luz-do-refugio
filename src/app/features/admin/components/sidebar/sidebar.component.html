@@ -1,0 +1,78 @@
+<div class="h-screen w-64 bg-[var(--lumiere-bordeaux)] text-white flex flex-col shadow-2xl fixed left-0 top-0 z-50">
+
+    <div class="h-16 flex items-center justify-center border-b border-white/10 bg-black/10">
+        <h1 class="font-serif-title text-xl tracking-widest text-[var(--lumiere-gold)]">
+            LUZ DO REFÚGIO
+        </h1>
+    </div>
+
+    <nav class="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
+
+        <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-2">Geral</p>
+
+        <a routerLink="/admin/dashboard" routerLinkActive="bg-white/10 text-[var(--lumiere-gold)] border-l-4 border-[var(--lumiere-gold)]"
+           class="flex items-center gap-3 px-4 py-3 rounded-r-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
+            <i data-feather="home" class="w-5 h-5"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Loja & Stock</p>
+
+        <a routerLink="/admin/produtos" routerLinkActive="bg-white/10 text-[var(--lumiere-gold)] border-l-4 border-[var(--lumiere-gold)]"
+           class="flex items-center gap-3 px-4 py-3 rounded-r-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
+            <i data-feather="package" class="w-5 h-5"></i>
+            <span>Produtos</span>
+        </a>
+
+        <a routerLink="/admin/materiais" routerLinkActive="bg-white/10 text-[var(--lumiere-gold)] border-l-4 border-[var(--lumiere-gold)]"
+           class="flex items-center gap-3 px-4 py-3 rounded-r-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
+            <i data-feather="layers" class="w-5 h-5"></i>
+            <span>Materiais</span>
+        </a>
+
+        <a routerLink="/admin/stock-movements" routerLinkActive="bg-white/10 text-[var(--lumiere-gold)] border-l-4 border-[var(--lumiere-gold)]"
+           class="flex items-center gap-3 px-4 py-3 rounded-r-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
+            <i data-feather="activity" class="w-5 h-5"></i>
+            <span>Movimentos</span>
+        </a>
+
+        <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Vendas</p>
+
+        <a routerLink="/admin/encomendas" routerLinkActive="bg-white/10 text-[var(--lumiere-gold)] border-l-4 border-[var(--lumiere-gold)]"
+           class="flex items-center gap-3 px-4 py-3 rounded-r-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
+            <i data-feather="shopping-bag" class="w-5 h-5"></i>
+            <span>Encomendas</span>
+        </a>
+
+        <a routerLink="/admin/reviews" routerLinkActive="bg-white/10 text-[var(--lumiere-gold)] border-l-4 border-[var(--lumiere-gold)]"
+           class="flex items-center gap-3 px-4 py-3 rounded-r-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
+            <i data-feather="star" class="w-5 h-5"></i>
+            <span>Avaliações</span>
+        </a>
+
+        <a routerLink="/admin/promocoes" routerLinkActive="bg-white/10 text-[var(--lumiere-gold)] border-l-4 border-[var(--lumiere-gold)]"
+           class="flex items-center gap-3 px-4 py-3 rounded-r-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
+            <i data-feather="tag" class="w-5 h-5"></i>
+            <span>Promoções</span>
+        </a>
+
+        <a routerLink="/admin/envios" routerLinkActive="bg-white/10 text-[var(--lumiere-gold)] border-l-4 border-[var(--lumiere-gold)]"
+           class="flex items-center gap-3 px-4 py-3 rounded-r-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
+            <i data-feather="truck" class="w-5 h-5"></i>
+            <span>Métodos de Envio</span>
+        </a>
+
+        <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Finanças</p>
+
+        <a routerLink="/admin/finance" routerLinkActive="bg-white/10 text-[var(--lumiere-gold)] border-l-4 border-[var(--lumiere-gold)]"
+           class="flex items-center gap-3 px-4 py-3 rounded-r-lg text-gray-300 hover:bg-white/5 hover:text-white transition-all">
+            <i data-feather="dollar-sign" class="w-5 h-5"></i>
+            <span>Fluxo Monetário</span>
+        </a>
+
+    </nav>
+
+    <div class="p-4 border-t border-white/10 bg-black/20">
+        <p class="text-xs text-gray-400 text-center">v1.0.0 Admin Panel</p>
+    </div>
+</div>

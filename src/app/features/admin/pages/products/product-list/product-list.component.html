@@ -1,0 +1,143 @@
+<div class="p-8 space-y-8 animate-[fadeIn_0.5s]">
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-serif-title font-bold text-[var(--lumiere-bordeaux)]">Produtos</h1>
+            <p class="text-gray-500">Gere o catálogo, preços, receitas e produz stock.</p>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none hover:text-gray-900 transition-colors">
+                <input type="checkbox" (change)="toggleShowInactive()" class="rounded border-gray-300 text-[var(--lumiere-bordeaux)] focus:ring-[var(--lumiere-gold)]">
+                Mostrar Inativos
+            </label>
+
+            <button (click)="openCreate()" class="btn-primary-lumiere flex items-center gap-2 shadow-sm">
+                <span>+</span> Novo Produto
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
+
+        @if (isLoading()) {
+        <div class="p-12 text-center text-gray-400 flex flex-col items-center gap-3">
+            <div class="w-8 h-8 border-4 border-gray-200 border-t-[var(--lumiere-gold)] rounded-full animate-spin"></div>
+            <p>A carregar catálogo...</p>
+        </div>
+        } @else if (products().length === 0) {
+        <div class="p-12 text-center text-gray-400">
+            <p class="text-lg">Ainda não tens produtos.</p>
+            <button (click)="openCreate()" class="text-[var(--lumiere-bordeaux)] font-bold mt-2 hover:underline">Criar o primeiro</button>
+        </div>
+        } @else {
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-gray-50 text-gray-500 uppercase text-[10px] font-bold tracking-wider">
+                <tr>
+                    <th class="p-4 w-16 text-center">Img</th>
+                    <th class="p-4">SKU / Nome</th>
+                    <th class="p-4 text-right">PVP</th>
+                    <th class="p-4 text-right">Custo</th>
+                    <th class="p-4 text-right">Margem</th>
+                    <th class="p-4 text-center">Stock</th>
+                    <th class="p-4 text-center">Activo loja</th>
+                    <th class="p-4 text-center">Estado</th>
+                    <th class="p-4 text-right">Ações</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 text-sm">
+
+                @for (p of visibleProducts(); track p.id) {
+                <tr class="transition-colors group"
+                    [class]="!p.active ? 'bg-gray-50 opacity-60 grayscale' : 'hover:bg-gray-50'">
+
+                    <td class="p-3">
+                        <div class="w-10 h-10 rounded bg-gray-100 overflow-hidden border border-gray-200 relative mx-auto">
+                            <img [src]="'/logo-velas/' + p.sku + '.png'" class="w-full h-full object-cover">
+                        </div>
+                    </td>
+
+                    <td class="p-3">
+                        <div class="text-[10px] font-bold text-gray-400 font-mono">{{ p.sku || '---' }}</div>
+                        <div class="font-bold text-gray-800 flex items-center gap-2">
+                            {{ p.name }}
+                            @if(!p.active) {
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-200 text-gray-500 border border-gray-300 uppercase tracking-wide">
+                                    Inativo
+                                </span>
+                            }
+                        </div>
+                    </td>
+
+                    <td class="p-3 text-right font-bold text-gray-700">
+                        {{ p.price | currency:'EUR' }}
+                    </td>
+
+                    <td class="p-3 text-right text-gray-400 text-xs">
+                        {{ p.estimatedCost | currency:'EUR' }}
+                    </td>
+
+                    <td class="p-3 text-right text-xs font-bold">
+                        @let margin = p.price - (p.estimatedCost || 0);
+                        <span [class]="margin > 0 ? 'text-green-600' : 'text-red-500'">
+                             {{ margin | currency:'EUR' }}
+                        </span>
+                    </td>
+
+                    <td class="p-3 text-center">
+                         <span [class]="p.stock < 5 ? 'px-2 py-1 rounded bg-red-100 text-red-700 font-bold text-xs' : 'text-gray-600 font-medium'">
+                            {{ p.stock }}
+                         </span>
+                    </td>
+                    <td class="p-3 text-center">
+                        @if (p.activeShop) {
+                        <span class="inline-block w-2 h-2 rounded-full bg-green-500 shadow-sm animate-pulse" title="Ativo na Loja"></span>
+                        } @else {
+                        <span class="inline-block w-2 h-2 rounded-full bg-red-400" title="Desativado"></span>
+                        }
+                    </td>
+                    <td class="p-3 text-center">
+                        @if (p.active) {
+                        <span class="inline-block w-2 h-2 rounded-full bg-green-500 shadow-sm animate-pulse" title="Ativo"></span>
+                        } @else {
+                        <span class="inline-block w-2 h-2 rounded-full bg-red-400" title="Desativado"></span>
+                        }
+                    </td>
+
+                    <td class="p-3 text-right space-x-1">
+                        @if(p.active) {
+                        <button (click)="openProduce(p)" class="w-8 h-8 inline-flex items-center justify-center rounded text-blue-400 hover:text-white hover:bg-blue-500 transition-all" title="Produzir (Fábrica)">
+                            🔨
+                        </button>
+                        }
+
+                        <button (click)="openEdit(p)" class="w-8 h-8 inline-flex items-center justify-center rounded text-gray-400 hover:text-white hover:bg-[var(--lumiere-gold)] transition-all" title="Editar">
+                            ✎
+                        </button>
+
+                        @if (p.active) {
+                        <button (click)="deleteProduct(p.id!)" class="w-8 h-8 inline-flex items-center justify-center rounded text-gray-400 hover:text-white hover:bg-red-500 transition-all" title="Desativar">
+                            🗑
+                        </button>
+                        } @else {
+                        <button (click)="restoreProduct(p.id!)" class="w-8 h-8 inline-flex items-center justify-center rounded text-gray-400 hover:text-white hover:bg-green-500 transition-all" title="Restaurar / Reativar">
+                            ♻️
+                        </button>
+                        }
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        }
+    </div>
+
+    @if (isModalOpen()) {
+    <app-product-form [product]="selectedProduct()" (close)="handleModalClose($event)"></app-product-form>
+    }
+
+    @if (isProduceModalOpen() && produceProductSelected()) {
+    }
+</div>

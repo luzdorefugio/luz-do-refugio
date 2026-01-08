@@ -1,0 +1,127 @@
+<div class="p-6 space-y-6">
+
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div>
+            <h1 class="font-serif-title text-2xl font-bold text-[var(--lumiere-bordeaux)]">Gestão de Avaliações</h1>
+            <p class="text-gray-500 text-sm mt-1">Aprova, edita ou cria comentários manualmente.</p>
+        </div>
+
+        <button (click)="openCreate()"
+                class="btn-primary-lumiere flex items-center gap-2 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all text-sm font-bold uppercase tracking-wide">
+            <span class="text-xl leading-none">+</span> Nova Avaliação Manual
+        </button>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+
+        @if (isLoading()) {
+        <div class="p-12 flex justify-center">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--lumiere-bordeaux)]"></div>
+        </div>
+        } @else {
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-[var(--lumiere-cream)]/30 text-gray-500 uppercase text-xs font-bold border-b border-gray-100">
+                <tr>
+                    <th class="p-4 pl-6">Cliente & Data</th>
+                    <th class="p-4">Classificação</th>
+                    <th class="p-4 w-1/3">Comentário</th>
+                    <th class="p-4 text-center">Visível</th>
+                    <th class="p-4 text-right pr-6">Ações</th> </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+
+                @for (review of reviews(); track review.id) {
+                <tr class="hover:bg-gray-50 transition-colors group cursor-pointer" (click)="openEdit(review)">
+
+                    <td class="p-4 pl-6 align-top">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[var(--lumiere-bordeaux)]/10 text-[var(--lumiere-bordeaux)] flex items-center justify-center font-bold text-sm">
+                                {{ review.authorName.charAt(0).toUpperCase() }}
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-gray-800">{{ review.authorName }}</span>
+                                <span class="text-xs text-gray-400">
+                                    {{ review.createdAt | date:'dd MMM yyyy' }}
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="p-4 align-top">
+                        <div class="flex text-[#d4af37]">
+                            @for (star of getStarsArray(review.rating); track star) {
+                            @if (star <= review.rating) { <span>★</span> }
+                            @else { <span class="opacity-30">★</span> }
+                            }
+                        </div>
+                        <span class="text-xs text-gray-400 font-medium mt-1 block">
+                            {{ review.rating }}.0 / 5.0
+                        </span>
+                    </td>
+
+                    <td class="p-4 align-top">
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 italic text-gray-600 text-sm leading-relaxed max-w-prose line-clamp-3">
+                            "{{ review.content }}"
+                        </div>
+                    </td>
+
+                    <td class="p-4 text-center align-middle">
+                        <div class="flex flex-col items-center gap-2">
+                            <button (click)="toggleStatus(review, $event)"
+                                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--lumiere-gold)] focus:ring-offset-2"
+                                    [class.bg-green-500]="review.active"
+                                    [class.bg-gray-300]="!review.active">
+                                <span class="translate-x-1 inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm"
+                                      [class.translate-x-6]="review.active"
+                                      [class.translate-x-1]="!review.active"></span>
+                            </button>
+                            <span class="text-[10px] font-bold uppercase tracking-wider"
+                                  [class.text-green-600]="review.active"
+                                  [class.text-gray-400]="!review.active">
+                                {{ review.active ? 'Publicado' : 'Oculto' }}
+                            </span>
+                        </div>
+                    </td>
+
+                    <td class="p-4 text-right pr-6 align-middle">
+                        <button (click)="$event.stopPropagation(); openEdit(review)"
+                                class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                title="Editar Review">
+                            ✏️
+                        </button>
+                    </td>
+
+                </tr>
+                }
+
+                @if (reviews().length === 0) {
+                <tr>
+                    <td colspan="5" class="p-12 text-center text-gray-500">
+                        <p class="text-lg">📭</p>
+                        Ainda não existem avaliações.
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        }
+    </div>
+
+    @if (isModalOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-[fadeIn_0.2s]"
+         (click)="handleModalClose(false)">
+
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+             (click)="$event.stopPropagation()">
+
+            <app-review-form
+                [reviewData]="selectedReview()"
+                (close)="handleModalClose($event)">
+            </app-review-form>
+
+        </div>
+    </div>
+    }
+</div>

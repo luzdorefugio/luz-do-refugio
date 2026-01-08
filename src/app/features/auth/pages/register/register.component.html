@@ -1,0 +1,69 @@
+<div class="min-h-screen flex items-center justify-center bg-[var(--lumiere-cream)] relative overflow-hidden">
+
+    <div class="absolute inset-0 opacity-10 honeycomb-bg"></div>
+
+    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md relative z-10 border-t-4 border-[var(--lumiere-bordeaux)] animate-[fadeIn_0.5s_ease-out]">
+
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-[var(--lumiere-gold)] text-[var(--lumiere-bordeaux)] rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg font-bold">
+                +
+            </div>
+            <h1 class="text-2xl font-serif-title font-bold text-[var(--lumiere-bordeaux)]">Juntar-se à Equipa</h1>
+            <p class="text-gray-500 text-sm mt-1">Criar conta de Administrador</p>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                        <i data-feather="user" class="w-4 h-4"></i>
+                    </div>
+                    <input type="text" [(ngModel)]="formData.name" name="name"
+                           class="pl-10 input-lumiere" placeholder="Ex: Fabriqueiro Chefe" required>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email Profissional</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                        <i data-feather="mail" class="w-4 h-4"></i>
+                    </div>
+                    <input type="email" [(ngModel)]="formData.email" name="email"
+                           class="pl-10 input-lumiere" placeholder="admin@luzdorefugio.pt" required>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Definir Password</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                        <i data-feather="lock" class="w-4 h-4"></i>
+                    </div>
+                    <input type="password" [(ngModel)]="formData.password" name="password"
+                           class="pl-10 input-lumiere" placeholder="••••••••" required minlength="6">
+                </div>
+            </div>
+
+            <button type="submit" [disabled]="!registerForm.form.valid || isLoading"
+                    class="w-full btn-admin-primary py-3 text-lg shadow-lg flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                @if (isLoading) {
+                <span>A Criar Conta...</span>
+                } @else {
+                <span>Criar Acesso Admin</span>
+                <i data-feather="check-circle" class="w-4 h-4"></i>
+                }
+            </button>
+
+        </form>
+
+        <div class="mt-6 text-center border-t border-gray-100 pt-4">
+            <p class="text-sm text-gray-500">
+                Já tens acesso?
+                <a routerLink="/login" class="text-[var(--lumiere-bordeaux)] font-bold hover:underline">Entrar aqui</a>
+            </p>
+        </div>
+    </div>
+</div>

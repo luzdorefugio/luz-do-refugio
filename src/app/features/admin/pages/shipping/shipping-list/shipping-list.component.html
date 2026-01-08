@@ -1,0 +1,100 @@
+<div class="p-6 space-y-6">
+    <div class="flex justify-between items-center bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <div>
+            <h1 class="font-serif-title text-2xl font-bold text-[var(--lumiere-bordeaux)]">Métodos de Envio</h1>
+            <p class="text-gray-500 text-sm mt-1">Configure preços e transportadoras.</p>
+        </div>
+        <button (click)="openCreate()" class="btn-primary-lumiere flex items-center gap-2 px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all">
+            <span class="text-xl leading-none">+</span> Novo Método
+        </button>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+
+        @if (isLoading()) {
+        <div class="p-12 flex justify-center">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--lumiere-bordeaux)]"></div>
+        </div>
+        } @else {
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-[var(--lumiere-cream)]/30 text-gray-500 uppercase text-xs font-bold border-b border-gray-100">
+                <tr>
+                    <th class="p-4 pl-6">Ordem</th>
+                    <th class="p-4">Nome</th>
+                    <th class="p-4">Descrição</th>
+                    <th class="p-4">Preço</th>
+                    <th class="p-4 text-center">Estado</th>
+                    <th class="p-4 text-right pr-6">Ações</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                @for (method of methods(); track method.id) {
+                <tr class="hover:bg-gray-50 transition-colors group">
+
+                    <td class="p-4 pl-6 font-mono text-gray-400 font-bold">#{{ method.displayOrder }}</td>
+
+                    <td class="p-4 font-bold text-gray-800">{{ method.name }}</td>
+
+                    <td class="p-4 text-gray-500">{{ method.description }}</td>
+
+                    <td class="p-4 font-bold text-[var(--lumiere-bordeaux)]">
+                        {{ method.price === 0 ? 'Grátis' : (method.price | currency:'EUR') }}
+                    </td>
+
+                    <td class="p-4 text-center">
+                                    <span class="px-2 py-1 rounded text-xs font-bold border"
+                                          [class.bg-green-50]="method.active" [class.text-green-700]="method.active" [class.border-green-100]="method.active"
+                                          [class.bg-gray-100]="!method.active" [class.text-gray-500]="!method.active" [class.border-gray-200]="!method.active">
+                                        {{ method.active ? 'ATIVO' : 'INATIVO' }}
+                                    </span>
+                    </td>
+
+                    <td class="p-4 text-right pr-6">
+                        <div class="flex justify-end gap-2">
+
+                            <button (click)="openEdit(method)"
+                                    class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                    title="Editar">
+                                ✏️
+                            </button>
+
+                            <button (click)="deleteMethod(method.id)"
+                                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                    title="Eliminar">
+                                🗑️
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                }
+
+                @if (methods().length === 0) {
+                <tr>
+                    <td colspan="6" class="p-12 text-center text-gray-500">
+                        Nenhum método de envio configurado.
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+        }
+    </div>
+
+    @if (isModalOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-[fadeIn_0.2s]"
+         (click)="handleModalClose(false)">
+
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg"
+             (click)="$event.stopPropagation()">
+
+            <app-shipping-form
+                [data]="selectedMethod()"
+                (close)="handleModalClose($event)">
+            </app-shipping-form>
+
+        </div>
+    </div>
+    }
+</div>

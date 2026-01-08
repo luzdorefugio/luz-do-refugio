@@ -1,0 +1,70 @@
+<div class="container">
+    <div class="header">
+        <h2>Fluxo Financeiro</h2>
+        <div class="summary-cards">
+            <div class="card income">
+                <span>Entradas</span>
+                <strong>{{ totalIncome | currency:'EUR' }}</strong>
+            </div>
+            <div class="card expense">
+                <span>Saídas</span>
+                <strong>{{ totalExpense | currency:'EUR' }}</strong>
+            </div>
+            <div class="card balance" [class.negative]="balance < 0">
+                <span>Balanço</span>
+                <strong>{{ balance | currency:'EUR' }}</strong>
+            </div>
+        </div>
+    </div>
+    @if (isLoading()) {
+    <div class="p-10 text-center text-gray-400">A carregar movimentos...</div>
+    } @else {
+
+    <table class="transaction-table">
+        <thead>
+        <tr>
+            <th>Data</th>
+            <th>Descrição</th>
+            <th>Categoria</th>
+            <th>Referência</th>
+            <th class="text-right">Valor</th>
+            <th>Autor</th> </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let tx of transactions">
+
+            <td>{{ tx.transactionDate | date:'dd/MM/yyyy' }}</td>
+
+            <td>
+                <span class="desc-main">{{ tx.description }}</span>
+            </td>
+
+            <td>
+                <span class="badge category-badge">{{ formatCategory(tx.category) }}</span>
+            </td>
+
+            <td class="text-small">
+          <span *ngIf="tx.referenceId" title="{{tx.referenceId}}">
+             #{{ tx.referenceId | slice:0:8 }}...
+          </span>
+                <span *ngIf="!tx.referenceId">-</span>
+            </td>
+
+            <td class="text-right font-bold"
+                [class.text-green]="tx.type === 'INCOME'"
+                [class.text-red]="tx.type === 'EXPENSE'">
+
+                <span *ngIf="tx.type === 'INCOME'">+</span>
+                <span *ngIf="tx.type === 'EXPENSE'">-</span>
+                {{ tx.amount | currency:'EUR' }}
+            </td>
+
+            <td class="text-small text-muted">
+                {{ tx.createdBy || 'Sistema' }}
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+    }
+</div>

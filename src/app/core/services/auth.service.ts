@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 export class AuthService {
     private http = inject(HttpClient);
     private router = inject(Router);
-    private apiUrl = environment.apiUrl;
+   private apiUrl = `${environment.apiUrl}/auth`;
     currentUser = signal<User | null>(this.getUserFromStorage());
 
   // ============================================================

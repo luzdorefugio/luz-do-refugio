@@ -2,11 +2,12 @@ import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ShopProduct } from '../models/shop-product.model';
 import { tap } from 'rxjs/operators'; // <--- IMPORTANTE
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class ShopProductService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:8080/api/shop/products';
+    private apiUrl = `${environment.apiUrl}/shop/products`;
     products = signal<ShopProduct[]>([]);
 
     getProducts() {

@@ -4,16 +4,14 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { User } from '../models/user.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private http = inject(HttpClient);
-  private router = inject(Router);
-
-  // Ajusta conforme a tua API. Geralmente é /auth/login, /auth/register, etc.
-  private apiUrl = 'http://localhost:8080/api/auth';
-
-  currentUser = signal<User | null>(this.getUserFromStorage());
+    private http = inject(HttpClient);
+    private router = inject(Router);
+    private apiUrl = environment.apiUrl;
+    currentUser = signal<User | null>(this.getUserFromStorage());
 
   // ============================================================
   // 1. LOGIN (Universal - Serve para Admin e Cliente)

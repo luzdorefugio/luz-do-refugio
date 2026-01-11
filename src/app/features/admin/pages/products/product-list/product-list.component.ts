@@ -1,54 +1,50 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core'; // <--- Adicionado 'computed'
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ProductService } from '../../../../../core/services/product.service';
+import { FormBuilder } from '@angular/forms'; // ReactiveFormsModule já não é necessário para a produção, mas pode ser para filtros futuros
 import { Product } from '../../../../../core/models/product.model';
+import { Material } from '../../../../../core/models/material.model'; // <--- IMPORTANTE
 import { ProductFormComponent } from '../product-form/product-form.component';
+import { ProductionModalComponent } from '../production-modal/production-modal.component'; // <--- IMPORTAR O MODAL NOVO
 import { NotificationService } from '../../../../../core/services/notification.service';
+import { ProductService } from '../../../../../core/services/product.service';
+import { MaterialService } from '../../../../../core/services/material.service'; // <--- IMPORTANTE
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ProductFormComponent],
+  imports: [CommonModule, ProductFormComponent, ProductionModalComponent], // <--- Adicionar Modal aos imports
   templateUrl: './product-list.component.html'
 })
 export class ProductListComponent implements OnInit {
 
   private service = inject(ProductService);
-  private fb = inject(FormBuilder);
+  private materialService = inject(MaterialService); // <--- Injetar serviço de materiais
   private notiService = inject(NotificationService);
 
   // --- ESTADO DOS DADOS ---
   products = signal<Product[]>([]);
+  materials = signal<Material[]>([]); // <--- Lista de materiais para passar ao modal
   isLoading = signal(true);
 
-  // --- FILTROS (Novo) ---
+  // --- FILTROS ---
   showInactive = signal(false);
 
-  // --- LISTA COMPUTADA (Novo) ---
-  // Esta lista reage automaticamente quando 'products' ou 'showInactive' mudam
+  // --- LISTA COMPUTADA ---
   visibleProducts = computed(() => {
     const all = this.products();
     const show = this.showInactive();
-
     if (show) return all;
-
-    // Filtra apenas os ativos (active === true ou undefined)
     return all.filter(p => p.active !== false);
   });
 
-  // --- ESTADO DO MODAL CRIAR/EDITAR ---
+  // --- ESTADO DO MODAL CRIAR/EDITAR PRODUTO ---
   isModalOpen = signal(false);
   selectedProduct = signal<Product | null>(null);
 
   // --- ESTADO DO MODAL PRODUZIR ---
   isProduceModalOpen = signal(false);
   produceProductSelected = signal<Product | null>(null);
-
-  // Form para a quantidade a produzir
-  produceForm = this.fb.group({
-    quantity: [1, [Validators.required, Validators.min(1)]]
-  });
+  // (Removemos o produceForm antigo, o modal novo trata disso)
 
   ngOnInit() {
     this.loadData();
@@ -56,16 +52,25 @@ export class ProductListComponent implements OnInit {
 
   loadData() {
     this.isLoading.set(true);
-    // O serviço deve retornar TODOS os produtos (ativos e inativos)
+
+    // Agora carregamos Produtos E Materiais
+    // (O ideal seria usar forkJoin, mas assim também funciona bem)
     this.service.getAllProducts().subscribe({
-      next: (data) => {
-        // Ordenar alfabeticamente
-        this.products.set(data.sort((a, b) => a.name.localeCompare(b.name)));
-        this.isLoading.set(false);
+      next: (productsData) => {
+        this.products.set(productsData.sort((a, b) => a.name.localeCompare(b.name)));
+        this.materialService.getAll().subscribe({
+            next: (materialsData) => {
+                this.materials.set(materialsData);
+                this.isLoading.set(false);
+            },
+            error: (err) => {
+                console.error('Erro ao carregar materiais', err);
+                this.isLoading.set(false);
+            }
+        });
       },
       error: (err) => {
-        const msg = err.error?.message || 'Erro desconhecido.';
-        this.notiService.apiError(err, 'Erro ao carregar produtos');
+        this.notiService.apiError(err, 'Erro ao carregar dados');
         this.isLoading.set(false);
       }
     });
@@ -75,10 +80,6 @@ export class ProductListComponent implements OnInit {
   toggleShowInactive() {
     this.showInactive.update(val => !val);
   }
-
-  // ==========================================
-  // AÇÕES: CRIAR / EDITAR / APAGAR / RESTAURAR
-  // ==========================================
 
   openCreate() {
     this.selectedProduct.set(null);
@@ -90,10 +91,9 @@ export class ProductListComponent implements OnInit {
     this.isModalOpen.set(true);
   }
 
-  // Soft Delete
   async deleteProduct(id: string) {
     const confirmed = await this.notiService.confirm(
-      'Desativar este produto? Ele deixará de aparecer na loja, mas o histórico mantém-se.'
+      'Desativar este produto? Ele deixará de aparecer na loja.'
     );
     if (confirmed) {
       this.service.delete(id).subscribe({
@@ -101,22 +101,18 @@ export class ProductListComponent implements OnInit {
           this.loadData();
           this.notiService.success('Produto desativado com sucesso.');
         },
-        error: (err) => {
-          this.notiService.apiError(err, 'Erro ao desativar produto');
-        }
+        error: (err) => this.notiService.apiError(err, 'Erro ao desativar')
       });
     }
   }
 
-  // Restore (Novo)
   async restoreProduct(id: string) {
-    // Requer endpoint POST /api/products/{id}/restore no backend
     this.service.restore(id).subscribe({
         next: () => {
-            this.notiService.success('Produto reativado com sucesso!');
+            this.notiService.success('Produto reativado!');
             this.loadData();
         },
-        error: (err) => this.notiService.apiError(err, 'Erro ao restaurar produto')
+        error: (err) => this.notiService.apiError(err, 'Erro ao restaurar')
     });
   }
 
@@ -129,46 +125,35 @@ export class ProductListComponent implements OnInit {
   }
 
   // ==========================================
-  // LÓGICA DE PRODUÇÃO
+  // LÓGICA DE PRODUÇÃO (NOVA) 🏭
   // ==========================================
 
   openProduce(product: Product) {
     this.produceProductSelected.set(product);
-    this.produceForm.reset({ quantity: 1 });
     this.isProduceModalOpen.set(true);
   }
 
-  closeProduce() {
-    this.isProduceModalOpen.set(false);
-    this.produceProductSelected.set(null);
-  }
-
-  async confirmProduce() {
-    const product = this.produceProductSelected();
-    const quantity = this.produceForm.value.quantity;
-
-    if (!product || !quantity || quantity < 1) return;
-
-    // Usar notiService para consistência visual
-    const confirmed = await this.notiService.confirm(
-        `Confirmar produção de ${quantity} unidades de "${product.name}"?\n(Isto vai descontar materiais do stock!)`
-    );
-
-    if (!confirmed) return;
-
+  // ESTA É A FUNÇÃO QUE FALTAVA 👇
+  handleProductionConfirm(event: { productId: string, quantity: number }) {
+    // 1. Mostrar feedback visual imediato
     this.isLoading.set(true);
 
-    this.service.produce(product.id, quantity).subscribe({
+    // 2. Chamar o backend
+    this.service.produce(event.productId, event.quantity).subscribe({
       next: () => {
-        this.isLoading.set(false);
-        this.closeProduce();
-        // Corrigido: uso de backticks para interpolação de string
-        this.notiService.success(`Sucesso! Produziste ${quantity} unidades.`);
+        // 3. Sucesso
+        this.notiService.success(`Produção registada! Stock atualizado.`);
+
+        // 4. Fechar modal e limpar seleção
+        this.isProduceModalOpen.set(false);
+        this.produceProductSelected.set(null);
+
+        // 5. Recarregar dados (Isto atualiza o stock das velas E das matérias-primas na tabela)
         this.loadData();
       },
       error: (err) => {
-        this.notiService.apiError(err, "Erro ao processar produção.");
         this.isLoading.set(false);
+        this.notiService.apiError(err, "Erro ao processar produção.");
       }
     });
   }

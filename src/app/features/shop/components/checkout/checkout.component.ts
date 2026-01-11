@@ -308,7 +308,6 @@ export class CheckoutComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading.set(false);
-        alert('Erro ao processar encomenda. Tente novamente.');
       }
     });
   }

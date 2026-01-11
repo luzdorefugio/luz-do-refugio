@@ -63,6 +63,7 @@
                                 <div class="mt-2 h-28 bg-gray-50 rounded border border-dashed border-gray-300 flex items-center justify-center overflow-hidden relative group">
                                     @if (form.get('sku')?.value) {
                                     <img [src]="'shop/' + form.get('sku')?.value + '_1.jpg'"
+                                         [alt]=" form.get('name')?.value"
                                          class="h-full w-full object-cover opacity-80"
                                          onerror="this.style.display='none'">
                                     }

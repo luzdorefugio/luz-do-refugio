@@ -54,7 +54,9 @@
 
                     <td class="p-3">
                         <div class="w-10 h-10 rounded bg-gray-100 overflow-hidden border border-gray-200 relative mx-auto">
-                            <img [src]="'/logo-velas/' + p.sku + '.png'" class="w-full h-full object-cover">
+                            <img [src]="'/logo-velas/' + p.sku + '.png'"
+                                 [alt]="p.name"
+                                 class="w-full h-full object-cover">
                         </div>
                     </td>
 
@@ -139,5 +141,11 @@
     }
 
     @if (isProduceModalOpen() && produceProductSelected()) {
+        <app-production-modal
+            [product]="produceProductSelected()!"
+            [materials]="materials()"
+            (close)="isProduceModalOpen.set(false)"
+            (confirm)="handleProductionConfirm($event)">
+        </app-production-modal>
     }
 </div>

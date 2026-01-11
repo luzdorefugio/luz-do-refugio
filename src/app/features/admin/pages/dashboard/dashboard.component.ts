@@ -24,7 +24,6 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private orderService = inject(OrderService);
     private notiService = inject(NotificationService);
     public auth = inject(AuthService);
-
     orders = signal<Order[]>([]);
     isLoading = signal(true);
     stats = signal<DashboardStats>({

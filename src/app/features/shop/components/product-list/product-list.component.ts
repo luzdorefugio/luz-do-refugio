@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, inject, signal } from '@angular/core'
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductCardComponent } from '../product-card/product-card.component';
+import { ShopProduct } from '../../../../core/models/shop-product.model';
 import { ShopProductService } from '../../../../core/services/shop-product.service';
 import { ReviewService } from '../../../../core/services/review.service';
 
@@ -26,18 +27,40 @@ interface Review {
 export class ProductListComponent implements OnInit, AfterViewInit {
     private service = inject(ShopProductService);
     private reviewService = inject(ReviewService);
-    products = this.service.products;
+        products = signal<ShopProduct[]>([]);
     reviews = signal<Review[]>([]);
+    isProductsLoading = signal(true); // Começa a carregar
+    isReviewsLoading = signal(true);  // Começa a carregar
 
     ngOnInit() {
-        this.service.getProducts();
+        this.loadProducts();
+        this.loadReviews();
+      }
+
+    loadProducts() {
+        // AQUI é onde apanhas o "fim" do getProducts
+        this.service.getProducts().subscribe({
+          next: (data) => {
+            this.products.set(data);
+            this.isProductsLoading.set(false); // ✅ ACABOU: Desliga o esqueleto
+          },
+          error: (erro) => {
+            console.error('Erro produtos:', erro);
+            this.isProductsLoading.set(false); // ✅ ERRO: Desliga o esqueleto também
+          }
+        });
+    }
+
+    loadReviews() {
         this.reviewService.getAllShop().subscribe({
             next: (data: Review[]) => {
                 this.reviews.set([...data, ...data]);
+                this.isReviewsLoading.set(false); // ✅ ACABOU Reviews
             },
             error: (erro) => {
-                console.error('Erro ao carregar reviews', erro);
-            }
+                console.error('Erro reviews:', erro);
+                this.isReviewsLoading.set(false); // ✅ ERRO Reviews
+          }
         });
     }
 

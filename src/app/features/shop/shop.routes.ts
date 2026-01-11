@@ -3,6 +3,7 @@ import { ShopLayoutComponent } from './components/shop-layout/shop-layout.compon
 import { ShopLoginComponent } from './components/shop-login/shop-login.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
+import { OrderTrackingComponent } from './components/order-tracking/order-tracking.component';
 import { ShopAccountComponent } from './components/shop-account/shop-account.component';
 import { AboutComponent } from './components/about/about.component';
 import { ContactComponent } from './components/contact/contact.component';
@@ -24,6 +25,7 @@ export const SHOP_ROUTES: Routes = [
       { path: 'checkout', component: CheckoutComponent },
       { path: 'sucesso', component: ShopSuccessComponent },
       { path: 'produto/:id', component: ProductDetailComponent },
+      { path: 'rastreio/:id', component: OrderTrackingComponent },
       { path: 'envios-devolucoes', component: ShippingComponent },
       { path: 'termos-condicoes', component: TermsComponent },
       { path: 'minha-conta', component: ShopAccountComponent, canActivate: [authGuard] }

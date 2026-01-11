@@ -161,7 +161,7 @@
                             </tr>
                             </thead>
                             <tbody class="divide-y">
-                            @for (item of order.items; track item.productName) {
+                            @for (item of order.items; track $index) {
                             <tr class="hover:bg-gray-50 transition-colors">
                                 <td class="p-3 font-medium text-gray-700">{{ item.productName }}</td>
                                 <td class="p-3 text-center text-gray-600">{{ item.quantity }}</td>

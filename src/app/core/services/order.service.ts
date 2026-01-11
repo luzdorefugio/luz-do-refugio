@@ -34,6 +34,18 @@ export class OrderService {
         return this.http.get<Order>(`${this.apiShopUrl}/${orderId}`);
     }
 
+    getOrderByIdSimple(orderId: string): Observable<Order> {
+        return this.http.get<Order>(`${this.apiShopUrl}/simple/${orderId}`);
+    }
+
+    getPendingCount(): Observable<number> {
+        return this.http.get<number>(`${this.apiAdminUrl}/count-pending`);
+    }
+
+    getPendingOrders(): Observable<Order[]> {
+        return this.http.get<Order[]>(`${this.apiAdminUrl}/pending-list`);
+    }
+
     toggleInvoiceStatus(id: string, currentStatus: boolean): Observable<void> {
         const newStatus = !currentStatus;
         return this.http.patch<void>(`${this.apiAdminUrl}/${id}/invoice-status`,

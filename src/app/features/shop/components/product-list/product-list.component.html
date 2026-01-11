@@ -1,59 +1,84 @@
-<section class="hero-gradient flex items-center relative overflow-hidden">
-    <div class="absolute inset-0 opacity-20 honeycomb-bg"></div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
-        <div class="md:flex items-center justify-between">
-            <div class="md:w-1/2 mb-12 md:mb-0" data-aos="fade-right">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold title-font text-[#f9f5f0] mb-6">
-                    Ilumina o teu <span class="text-[#d4af37]">Espaço</span>
-                </h1>
-                <p class="text-lg text-[#f9f5f0] opacity-90 mb-8 max-w-lg">
-                    Velas artesanais com ingredientes naturais, desenhadas para criar a atmosfera perfeita.
-                </p>
-                <a href="#shop" class="btn-gold text-[#5c0a0a] font-semibold py-3 px-8 rounded-md shadow-md inline-block">
-                    Ver Coleção
-                </a>
-            </div>
-            <div class="md:w-1/2 flex justify-center" data-aos="fade-left">
-                <div class="w-80 bg-[#d4af37] rounded-[77px] opacity-20 blur-xl absolute"></div>
-                <img src="LOGO-3.png"
-                     class="relative rounded-[77px] w-80 object-cover shadow-2xl border-4 border-[#f9f5f0]">
-            </div>
-        </div>
-    </div>
-</section>
-
 <section id="shop" class="py-20 bg-[#f9f5f0]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
         <div class="text-center mb-16" data-aos="fade-up">
             <h2 class="text-3xl md:text-4xl font-bold title-font text-[#5c0a0a] mb-4">
-                A Nossa <span class="text-[#d4af37]">Coleção</span>
+                A Nossa <span class="text-[#7c5e10]">Coleção</span>
             </h2>
-            <div class="w-20 h-1 bg-[#d4af37] mx-auto mb-6"></div>
+            <div class="w-20 h-1 bg-[#7c5e10] mx-auto mb-6"></div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
 
+            @if (isProductsLoading()) {
+            @for (item of [1,2,3,4,5,6]; track $index) {
+            <div class="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 h-full flex flex-col animate-pulse">
+                <div class="h-64 bg-gray-200 w-full"></div>
+
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-6">
+                        <div class="h-6 bg-gray-200 rounded w-16"></div>
+                        <div class="h-8 bg-gray-200 rounded w-24"></div>
+                    </div>
+                </div>
+            </div>
+            }
+            }
+
+            @else {
             <app-product-card
                 *ngFor="let p of products()"
                 [product]="p"
                 data-aos="fade-up">
             </app-product-card>
+            }
 
         </div>
+
+        @if (!isProductsLoading() && products().length === 0) {
+        <div class="text-center py-20">
+            <p class="text-xl text-[#5c0a0a] font-serif-title">
+                O nosso stock esgotou! 🕯️<br>
+                <span class="text-base text-gray-500 font-sans">Estamos a produzir mais velas mágicas. Volte brevemente.</span>
+            </p>
+        </div>
+        }
     </div>
 </section>
+
+
 <section class="py-16 bg-white overflow-hidden relative border-t border-gray-100">
 
     <div class="text-center mb-10" data-aos="fade-up">
         <h3 class="font-serif-title text-2xl text-[#5c0a0a]">O que dizem os nossos clientes ❤️</h3>
     </div>
 
+    @if (isReviewsLoading()) {
+    <div class="flex justify-center gap-6 overflow-hidden px-4 opacity-50">
+        @for (item of [1,2,3]; track $index) {
+        <div class="w-[300px] h-[200px] bg-gray-50 rounded-xl border border-gray-100 p-6 animate-pulse flex-shrink-0">
+            <div class="h-4 bg-gray-200 w-20 mb-4 rounded"></div>
+            <div class="h-3 bg-gray-200 w-full mb-2 rounded"></div>
+            <div class="h-3 bg-gray-200 w-2/3 mb-4 rounded"></div>
+            <div class="flex items-center gap-3 mt-auto">
+                <div class="w-8 h-8 rounded-full bg-gray-200"></div>
+                <div class="h-3 bg-gray-200 w-24 rounded"></div> </div>
+        </div>
+        }
+    </div>
+    }
+
+    @else {
     <div class="marquee-container relative flex overflow-x-hidden group">
 
         <div class="marquee-content flex gap-6 animate-scroll whitespace-nowrap py-4 px-4 hover:pause">
-
             @for (review of reviews(); track $index) {
-            <div class="w-[300px] md:w-[350px] bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex-shrink-0 whitespace-normal hover:shadow-md transition-shadow">
+            <div class="w-[300px] md:w-[350px] bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex-shrink-0 whitespace-normal hover:shadow-md transition-shadow cursor-default">
 
                 <div class="flex text-[#d4af37] mb-3 text-sm">
                     @for (star of [1,2,3,4,5]; track star) {
@@ -69,34 +94,38 @@
                     <div class="w-8 h-8 rounded-full bg-[#5c0a0a]/10 flex items-center justify-center text-[#5c0a0a] font-bold text-xs">
                         {{ review.authorName.charAt(0) }}
                     </div>
-                    <span class="text-xs font-bold text-gray-800 uppercase tracking-wide">
-                        {{ review.authorName }}
-                    </span>
-                    <span class="text-[10px] text-green-600 bg-green-50 px-2 py-0.5 rounded-full flex items-center gap-1">
-                        ✓ Compra Verificada
-                    </span>
+                    <div class="flex flex-col">
+                                <span class="text-xs font-bold text-gray-800 uppercase tracking-wide">
+                                    {{ review.authorName }}
+                                </span>
+                        <span class="text-[10px] text-green-800 bg-green-50 px-2 py-0.5 rounded-full flex items-center gap-1 w-fit mt-0.5">
+                                    ✓ Compra Verificada
+                                </span>
+                    </div>
                 </div>
             </div>
             }
-
         </div>
 
-        <div class="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#f9f5f0] to-transparent z-10 pointer-events-none"></div>
-        <div class="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#f9f5f0] to-transparent z-10 pointer-events-none"></div>
+        <div class="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+        <div class="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
     </div>
+    }
 </section>
+
 <section id="about" class="py-20 bg-[#f9f5f0]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:flex items-center">
 
         <div class="md:w-1/2 mb-8 md:mb-0" data-aos="fade-right">
             <img src="https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=600&auto=format&fit=crop"
+                 alt="Decoração de interiores iluminada por vela de soja artesanal feita por Luz do Refúgio num ambiente acolhedor e relaxante"
                  class="rounded-lg shadow-xl hover:scale-[1.02] transition-transform duration-500">
         </div>
 
         <div class="md:w-1/2 md:pl-16" data-aos="fade-left">
             <h2 class="text-3xl font-bold title-font text-[#5c0a0a] mb-4">
-                A Nossa <span class="text-[#d4af37]">História</span>
+                A Nossa <span class="text-[#7c5e10]">História</span>
             </h2>
 
             <p class="text-[#5c0a0a] mb-6 leading-relaxed">
@@ -105,7 +134,7 @@
             </p>
 
             <a routerLink="/loja/sobre"
-               class="inline-flex items-center gap-2 text-[#d4af37] font-bold uppercase tracking-widest text-sm border-b-2 border-[#d4af37]/30 hover:border-[#5c0a0a] hover:text-[#5c0a0a] transition-all pb-1 group cursor-pointer">
+               class="inline-flex items-center gap-2 text-[#7c5e10] font-bold uppercase tracking-widest text-sm border-b-2 border-[#d4af37]/30 hover:border-[#5c0a0a] hover:text-[#5c0a0a] transition-all pb-1 group cursor-pointer">
                 Conhecer a Marca
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform group-hover:translate-x-1 transition-transform"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
             </a>

@@ -1,7 +1,7 @@
 <div class="candle-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-500 h-full flex flex-col"
      [class.opacity-90]="product.stock === 0"> <div class="relative overflow-hidden h-64 group cursor-pointer" [routerLink]="['/loja/produto', product.id]">
 
-    <img [src]="'shop/' + product.sku + '_1.jpg'"
+    <img [src]="'shop/' + product.sku + '_0.jpg'"
          [alt]="product.name"
          class="w-full h-full object-cover transition duration-500 group-hover:scale-110"
          [class.grayscale]="product.stock === 0">

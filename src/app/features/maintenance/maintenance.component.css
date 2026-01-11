@@ -1,0 +1,49 @@
+.maintenance-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f9f7f2; /* Um tom creme/bege suave */
+  color: #5d4037; /* Castanho terra para o texto */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+.content {
+  max-width: 600px;
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.logo-img {
+  max-width: 150px;
+  border-radius: 50%; /* Se a imagem for quadrada, fica redonda */
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #3e2723;
+}
+
+p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.highlight {
+  font-weight: bold;
+  color: #d84315; /* Um laranja suave a lembrar chama */
+  font-size: 1.2rem;
+  margin-top: 20px;
+}
+
+a {
+  color: #3e2723;
+  text-decoration: underline;
+}

@@ -1,3 +1,3 @@
 User-agent: *
-Allow: /
-Sitemap: https://luz-do-refugio.vercel.app/sitemap.xml
+Disallow: /
+Sitemap: https://www.luzdorefugio.pt/sitemap.xml

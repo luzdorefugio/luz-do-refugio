@@ -1,0 +1,14 @@
+<div class="h-screen w-full flex flex-col items-center justify-center bg-[#f9f5f0] text-[#5c0a0a]">
+    <img *ngIf="!isLogoMissing"
+         src="/assets/logo.png"
+         alt="Luz do Refúgio"
+         class="logo-img-main"
+         (error)="onLogoError()">
+
+    <div *ngIf="isLogoMissing" class="text-6xl mb-4 placeholder-icon">
+        🕯️
+    </div>
+    <h1 class="text-4xl font-serif-title font-bold mb-2">Luz do Refúgio</h1>
+    <p class="text-xl">Estamos a preparar algo mágico.</p>
+    <p class="mt-4 text-sm text-gray-500">Brevemente disponível.</p>
+</div>

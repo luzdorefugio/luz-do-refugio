@@ -1,0 +1,138 @@
+/* =========================================
+   1. ESTILOS VISUAIS (FONTS & LAYOUT)
+   ========================================= */
+
+.font-handwriting {
+  font-family: 'Caveat', cursive, sans-serif;
+  line-height: 1.4;
+}
+
+.font-serif-title {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Tamanho do Papel (A5 Horizontal) com Margens de 5cm */
+.card-paper {
+  width: 210mm;
+  height: 148mm;
+  background: white;
+
+  /* Margens laterais de 50mm (5cm) */
+  padding-left: 50mm;
+  padding-right: 50mm;
+
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Linha de dobra */
+.fold-line {
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  bottom: 5%;
+  border-left: 1px dashed #e5e7eb;
+  z-index: 50;
+  opacity: 0.5;
+}
+
+/* Container de quebra de página */
+.page-break {
+  display: block;
+  page-break-after: always;
+  break-after: page;
+  width: 100%;
+  height: auto;
+  margin-bottom: 2rem; /* Espaço no ecrã */
+}
+
+/* Cor de fundo da capa (Visível no ecrã) */
+.cover-bg {
+  background-color: #fcfbf7;
+}
+
+/* Ajustes para Scroll no Ecrã (Desktop) */
+@media screen {
+  .print-canvas {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem; /* Espaço entre cartões */
+    min-height: 100vh;
+    padding-top: 5rem; /* Espaço para o header fixo */
+    padding-bottom: 5rem;
+  }
+}
+
+/* =========================================
+   2. REGRAS DE IMPRESSÃO (MEDIA PRINT)
+   ========================================= */
+@media print {
+
+  @page {
+    /* Define explicitamente A5 Paisagem */
+    size: A5 landscape;
+    margin: 0 !important;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+    visibility: hidden;
+  }
+
+  /* Mostra apenas o canvas */
+  .print-canvas,
+  .print-canvas * {
+    visibility: visible;
+  }
+
+  /* Esconde botões */
+  .no-print {
+    display: none !important;
+  }
+
+  .print-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    display: block !important; /* Block para permitir page-break */
+  }
+
+  .page-break {
+    margin-bottom: 0;
+    height: 100%; /* Ocupa a folha toda */
+  }
+
+  .card-paper {
+    box-shadow: none !important;
+    margin: 0 !important;
+    width: 210mm !important;
+    height: 148mm !important;
+
+    /* Força margens na impressão */
+    padding-left: 50mm !important;
+    padding-right: 50mm !important;
+
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Força a cor creme na impressão */
+  .cover-bg {
+    background-color: #ece8df !important; /* Tom mais escuro para garantir impressão */
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

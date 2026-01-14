@@ -1,10 +1,11 @@
-import { Component, OnInit, AfterViewInit, inject, signal } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductCardComponent } from '../product-card/product-card.component';
 import { ShopProduct } from '../../../../core/models/shop-product.model';
 import { ShopProductService } from '../../../../core/services/shop-product.service';
 import { ReviewService } from '../../../../core/services/review.service';
+import { CartService } from '../../../../core/services/cart.service';
 
 // Declarações globais para as bibliotecas de animação
 declare var AOS: any;
@@ -27,10 +28,31 @@ interface Review {
 export class ProductListComponent implements OnInit, AfterViewInit {
     private service = inject(ShopProductService);
     private reviewService = inject(ReviewService);
-        products = signal<ShopProduct[]>([]);
+    private cartService = inject(CartService);
+    products = signal<ShopProduct[]>([]);
     reviews = signal<Review[]>([]);
-    isProductsLoading = signal(true); // Começa a carregar
-    isReviewsLoading = signal(true);  // Começa a carregar
+    isProductsLoading = signal(true);
+    isReviewsLoading = signal(true);
+
+    highlightProducts = computed(() => {
+        return this.products().filter(p => p.featured === true);
+    });
+
+    collectionProducts = computed(() => {
+        return this.products().filter(p => p.featured === false);
+    });
+
+
+    ngAfterViewInit() {
+        setTimeout(() => {
+            if (typeof AOS !== 'undefined') {
+                AOS.init({ duration: 800, once: true });
+            }
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+        }, 100);
+    }
 
     ngOnInit() {
         this.loadProducts();
@@ -62,16 +84,5 @@ export class ProductListComponent implements OnInit, AfterViewInit {
                 this.isReviewsLoading.set(false); // ✅ ERRO Reviews
           }
         });
-    }
-
-    ngAfterViewInit() {
-        setTimeout(() => {
-            if (typeof AOS !== 'undefined') {
-                AOS.init({ duration: 800, once: true });
-            }
-            if (typeof feather !== 'undefined') {
-                feather.replace();
-            }
-        }, 100);
     }
 }

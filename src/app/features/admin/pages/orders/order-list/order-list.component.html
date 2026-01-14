@@ -61,7 +61,7 @@
 
     @if (isModalOpen) {
     <app-order-form
-        [order]="selectedOrder"
+        [order]="selectedOrder()"
         (close)="handleModalClose()"
         (save)="handleModalSave()">
     </app-order-form>

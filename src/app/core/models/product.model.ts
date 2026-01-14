@@ -13,6 +13,8 @@ export interface Product {
     sku: string;
     name: string;
     description: string;
+    cardMessage: string;
+    cardColorDesc: string;
     price: number;
     maxProduction: number;
     stock: number;

@@ -1,26 +1,98 @@
+<section class="hero-gradient flex items-center relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20 honeycomb-bg"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
+        <div class="md:flex items-center justify-between">
+            <div class="md:w-1/2 mb-12 md:mb-0" data-aos="fade-right">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold title-font text-[#f9f5f0] mb-6">
+                    Ilumina o teu <span class="text-[#d4af37]">Espaço</span>
+                </h1>
+                <p class="text-lg text-[#f9f5f0] opacity-90 mb-8 max-w-lg">
+                    Velas artesanais com ingredientes naturais, desenhadas para criar a atmosfera perfeita.
+                </p>
+                <a href="#shop" class="btn-gold text-[#5c0a0a] font-semibold py-3 px-8 rounded-md shadow-md inline-block">
+                    Ver Coleção
+                </a>
+            </div>
+            <div class="md:w-1/2 flex justify-center" data-aos="fade-left">
+                <div class="w-80 bg-[#d4af37] rounded-[77px] opacity-20 blur-xl absolute"></div>
+                <img src="LOGO-3.png" alt="Logo da Luz do refugio"
+                     class="relative rounded-[77px] w-80 object-cover shadow-2xl border-4 border-[#f9f5f0]">
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (highlightProducts().length > 0 && !isProductsLoading()) {
+<section id="destaques" class="py-10 bg-white relative overflow-hidden border-b border-[#f9f5f0]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10" data-aos="fade-up">
+            <h2 class="text-3xl md:text-4xl font-serif mb-2 text-[#5c0a0a]">
+                Destaques da Estação
+            </h2>
+            <span class="text-rose-600 font-bold tracking-widest text-xs uppercase block">Edição Limitada</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto">
+            @for (p of highlightProducts(); track p.id) {
+                <div class="group relative flex flex-col bg-[#f9f5f0]/50 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-500 border border-transparent hover:border-rose-100 h-full" data-aos="fade-up">
+                    <div class="pt-6 px-6 md:px-8 pb-2 text-center md:text-left">
+                        <h3 class="text-2xl md:text-3xl font-serif text-[#2a1a1a] leading-tight">
+                            {{ p.name }}
+                        </h3>
+                    </div>
+                    <div class="flex flex-col md:flex-row flex-grow">
+                        <div class="w-full md:w-5/12 h-64 md:h-auto relative overflow-hidden pl-0 md:pl-6 pb-6 md:pb-6">
+                            <div class="w-full h-full relative rounded-lg overflow-hidden shadow-sm">
+                                <img class="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
+                                     [src]="'shop/' + p.sku + '_0.jpg'"
+                                     [alt]="p.name"
+                                     [class.grayscale]="p.stock === 0">
+                                <div class="absolute top-2 left-2 bg-rose-600 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest rounded-sm z-10">
+                                    Especial
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-7/12 p-6 md:p-8 pt-0 md:pt-2 flex flex-col justify-between">
+                            <p class="text-gray-500 text-sm mb-6 leading-relaxed">
+                                {{ p.description }}
+                            </p>
+                            <div class="flex items-center gap-6 w-full justify-center md:justify-start mt-auto">
+                                <span class="text-2xl font-bold text-[#7c5e10]">{{ p.salePrice }}€</span>
+                                <a [routerLink]="['/loja/produto', p.id]"
+                                   [attr.aria-label]="'Ver Pack -Ver detalhes do pack ' + p.name"
+                                   class="bg-[#5c0a0a] text-[#f9f5f0] px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-[#7a1212] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+                                    Ver Pack
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+}
+
+
 <section id="shop" class="py-20 bg-[#f9f5f0]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         <div class="text-center mb-16" data-aos="fade-up">
             <h2 class="text-3xl md:text-4xl font-bold title-font text-[#5c0a0a] mb-4">
                 A Nossa <span class="text-[#7c5e10]">Coleção</span>
             </h2>
             <div class="w-20 h-1 bg-[#7c5e10] mx-auto mb-6"></div>
         </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
 
             @if (isProductsLoading()) {
             @for (item of [1,2,3,4,5,6]; track $index) {
             <div class="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 h-full flex flex-col animate-pulse">
                 <div class="h-64 bg-gray-200 w-full"></div>
-
                 <div class="p-6 flex-1 flex flex-col justify-between">
                     <div>
                         <div class="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
                         <div class="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
                     </div>
-
                     <div class="flex justify-between items-center mt-6">
                         <div class="h-6 bg-gray-200 rounded w-16"></div>
                         <div class="h-8 bg-gray-200 rounded w-24"></div>
@@ -29,24 +101,19 @@
             </div>
             }
             }
-
             @else {
-            <app-product-card
-                *ngFor="let p of products()"
-                [product]="p"
-                data-aos="fade-up">
-            </app-product-card>
+                <app-product-card *ngFor="let p of collectionProducts()" [product]="p" data-aos="fade-up">
+                </app-product-card>
             }
-
         </div>
 
-        @if (!isProductsLoading() && products().length === 0) {
-        <div class="text-center py-20">
-            <p class="text-xl text-[#5c0a0a] font-serif-title">
-                O nosso stock esgotou! 🕯️<br>
-                <span class="text-base text-gray-500 font-sans">Estamos a produzir mais velas mágicas. Volte brevemente.</span>
-            </p>
-        </div>
+        @if (!isProductsLoading() && collectionProducts().length === 0 && highlightProducts().length === 0) {
+            <div class="text-center py-20">
+                <p class="text-xl text-[#5c0a0a] font-serif-title">
+                    O nosso stock esgotou! 🕯️<br>
+                    <span class="text-base text-gray-500 font-sans">Estamos a produzir mais velas mágicas. Volte brevemente.</span>
+                </p>
+            </div>
         }
     </div>
 </section>

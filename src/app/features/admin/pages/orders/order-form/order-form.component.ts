@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, ChangeDetectorRef, Output, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Order } from '../../../../../core/models/order.model';
 import { Product } from '../../../../../core/models/product.model';
 import { CommonService, EnumResponse } from '../../../../../core/services/common.service';
@@ -11,7 +12,7 @@ import { NotificationService } from '../../../../../core/services/notification.s
 @Component({
   selector: 'app-order-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink],
   templateUrl: './order-form.component.html'
 })
 export class OrderFormComponent implements OnInit {
@@ -22,78 +23,63 @@ export class OrderFormComponent implements OnInit {
     private commonService = inject(CommonService);
     private notify = inject(NotificationService);
 
-    // Recebe null (Criar) ou um Objeto Resumo (Editar/Ver)
     @Input() order: Order | null = null;
-
     @Output() close = new EventEmitter<void>();
     @Output() save = new EventEmitter<void>();
 
     isLoading = false;
     products = signal<Product[]>([]);
     cartItems = signal<any[]>([]);
-
-    // Lista completa vinda da API
     statusOptions = signal<EnumResponse[]>([]);
 
-    // --- NOVO: Lista filtrada apenas para o formulário de CRIAÇÃO ---
+    // Opções de estado apenas para criação
     createStatusOptions = computed(() => {
         const allowedForCreation = ['PENDING', 'PAID', 'DELIVERED'];
-        // Filtra a lista completa para mostrar apenas os permitidos
         return this.statusOptions().filter(opt => allowedForCreation.includes(opt.key));
     });
 
     createForm!: FormGroup;
     itemForm!: FormGroup;
 
-    // Calcula o total do carrinho em tempo real
     totalCreateAmount = computed(() => {
-        return this.cartItems().reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        const itemsTotal = this.cartItems().reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        const shippingCost = this.createForm?.get('shippingCost')?.value || 0;
+        return itemsTotal + shippingCost;
     });
 
     ngOnInit() {
         this.loadStatusOptions();
-
         if (this.order) {
-            // --- MODO VISUALIZAÇÃO / EDIÇÃO ---
             this.fetchOrderDetails(this.order.id);
         } else {
-            // --- MODO CRIAÇÃO ---
             this.loadProducts();
             this.initForms();
+            this.setupFormListeners(); // Ativa validações dinâmicas
         }
     }
 
     private loadStatusOptions() {
         this.commonService.getOrderStatus().subscribe({
             next: (types) => this.statusOptions.set(types),
-            error: (err) => this.notify.apiError(err, 'Erro ao carregar status das ordens.')
+            error: (err) => this.notify.apiError(err, 'Erro ao carregar status.')
         });
     }
 
-    // Filtra as opções baseado no diagrama de estados para EDIÇÃO
     getAvailableStatusOptions() {
         if (!this.order) return [];
-
         const current = this.order.status;
         const allOptions = this.statusOptions();
 
         return allOptions.filter(opt => {
             if (opt.key === current) return true;
             switch (current) {
-                case 'PENDING':
-                    return ['PAID', 'CANCELLED', 'DELIVERED'].includes(opt.key);
-                case 'PAID':
-                    return ['SHIPPED', 'DELIVERED', 'RETURNED'].includes(opt.key);
-                case 'SHIPPED':
-                    return ['DELIVERED', 'RETURNED'].includes(opt.key);
-                case 'DELIVERED':
-                    return ['RETURNED'].includes(opt.key);
-                case 'CANCELLED':
-                    return ['PENDING'].includes(opt.key);
-                case 'RETURNED':
-                    return ['PAID'].includes(opt.key);
-                default:
-                    return false;
+                case 'PENDING': return ['PAID', 'CANCELLED', 'DELIVERED'].includes(opt.key);
+                case 'PAID': return ['SHIPPED', 'DELIVERED', 'RETURNED'].includes(opt.key);
+                case 'SHIPPED': return ['DELIVERED', 'RETURNED'].includes(opt.key);
+                case 'DELIVERED': return ['RETURNED'].includes(opt.key);
+                case 'CANCELLED': return ['PENDING'].includes(opt.key);
+                case 'RETURNED': return ['PAID'].includes(opt.key);
+                default: return false;
             }
         });
     }
@@ -106,8 +92,8 @@ export class OrderFormComponent implements OnInit {
                 this.isLoading = false;
                 this.cdr.markForCheck();
             },
-            error: (err) => {
-                this.notify.error('Não foi possível carregar os detalhes da encomenda.');
+            error: () => {
+                this.notify.error('Erro ao carregar detalhes.');
                 this.isLoading = false;
             }
         });
@@ -115,16 +101,38 @@ export class OrderFormComponent implements OnInit {
 
     private initForms() {
         this.createForm = this.fb.group({
+            // --- Dados Pessoais & Envio ---
             customerName: ['', Validators.required],
-            customerEmail: ['', [Validators.email]],
-            customerPhone: [''],
+            customerEmail: ['', [Validators.required, Validators.email]],
+            customerPhone: ['', Validators.required],
             customerNif: [''],
-            address: [''],
-            city: [''],
-            zipCode: [''],
+
+            // Morada de Envio
+            address: ['', Validators.required],
+            city: ['', Validators.required],
+            zipCode: ['', Validators.required],
+
+            // --- Faturação Diferente ---
+            hasDifferentBilling: [false],
+            billingAddress: [''],
+            billingCity: [''],
+            billingZipCode: [''],
+
+            // --- Gift ---
+            isGift: [false],
+            giftFromName: [''],
+            giftToName: [''],
+            giftMessage: [''],
+            giftHidePrice: [false],
+
+            // --- Pagamento & Logística ---
             paymentMethod: ['numerario', Validators.required],
+            shippingMethod: ['Correio Normal'],
+            shippingCost: [0], // Novo campo
             channel: ['DIRECT', Validators.required],
-            status: ['PAID', Validators.required], // Valor por defeito
+            status: ['PAID', Validators.required],
+
+            // --- Extras ---
             withoutBox: [false],
             withoutCard: [false]
         });
@@ -135,10 +143,36 @@ export class OrderFormComponent implements OnInit {
         });
     }
 
+    // Configura validação dinâmica (Ex: Billing obrigatório se checkbox marcada)
+    private setupFormListeners() {
+        const billingCheck = this.createForm.get('hasDifferentBilling');
+
+        billingCheck?.valueChanges.subscribe((isChecked: boolean) => {
+            const fields = ['billingAddress', 'billingCity', 'billingZipCode'];
+
+            fields.forEach(field => {
+                const control = this.createForm.get(field);
+                if (isChecked) {
+                    control?.setValidators([Validators.required]);
+                } else {
+                    control?.clearValidators();
+                    control?.setValue(''); // Limpa valor ao esconder
+                }
+                control?.updateValueAndValidity();
+            });
+        });
+
+        // Recalcular total se mudar o custo de envio
+        this.createForm.get('shippingCost')?.valueChanges.subscribe(() => {
+            // Apenas para disparar o computed 'totalCreateAmount'
+            this.cartItems.update(v => [...v]);
+        });
+    }
+
     private loadProducts() {
         this.productService.getAllProducts().subscribe({
             next: (data) => this.products.set(data),
-            error: (err) => console.error('Erro ao carregar produtos', err)
+            error: (err) => console.error('Erro produtos', err)
         });
     }
 
@@ -161,45 +195,85 @@ export class OrderFormComponent implements OnInit {
     }
 
     async removeCartItem(index: number) {
-        if (await this.notify.confirm('Remover item do carrinho?')) {
-            this.cartItems.update(items => items.filter((_, i) => i !== index));
-        }
+        this.cartItems.update(items => items.filter((_, i) => i !== index));
     }
 
     submitCreate() {
         if (this.createForm.invalid || this.cartItems().length === 0) {
             this.createForm.markAllAsTouched();
-            this.notify.error('Verifique os campos obrigatórios e adicione produtos.');
+            this.notify.error('Preencha os campos obrigatórios e adicione produtos.');
             return;
         }
 
         this.isLoading = true;
-        const rawForm = this.createForm.getRawValue();
+        const raw = this.createForm.getRawValue();
+
+        // Separa Nome/Apelido (simples split, backend gere o resto)
+        const nameParts = raw.customerName.trim().split(' ');
+        const firstName = nameParts[0];
+        const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+
+        // Determina morada de faturação
+        const billingAddr = raw.hasDifferentBilling ? {
+            street: raw.billingAddress,
+            city: raw.billingCity,
+            zip: raw.billingZipCode,
+            country: 'Portugal'
+        } : { // Se for igual, envia a de envio
+            street: raw.address,
+            city: raw.city,
+            zip: raw.zipCode,
+            country: 'Portugal'
+        };
 
         const payload = {
-            channel: rawForm.channel,
-            status: rawForm.status,
-            withoutBox: rawForm.withoutBox,
-            withoutCard: rawForm.withoutCard,
-            total: this.totalCreateAmount(),
+            // Estrutura aninhada conforme OrderRequest.java
             customer: {
-                name: rawForm.customerName,
-                email: rawForm.customerEmail,
-                phone: rawForm.customerPhone,
-                nif: rawForm.customerNif,
-                address: rawForm.address,
-                city: rawForm.city,
-                zipCode: rawForm.zipCode
+                firstName: firstName,
+                lastName: lastName, // Backend pode usar customerName ou First/Last
+                email: raw.customerEmail,
+                phone: raw.customerPhone,
+                nif: raw.customerNif,
+
+                shippingAddress: {
+                    street: raw.address,
+                    city: raw.city,
+                    zip: raw.zipCode,
+                    country: 'Portugal'
+                },
+                billingAddress: billingAddr
             },
+
+            // Gift (só envia se isGift for true)
+            giftDetails: raw.isGift ? {
+                isGift: true,
+                fromName: raw.giftFromName,
+                toName: raw.giftToName,
+                message: raw.giftMessage,
+                hidePrice: raw.giftHidePrice
+            } : null,
+
             payment: {
-                paymentMethod: rawForm.paymentMethod
+                method: raw.paymentMethod // Ajustado para 'method'
             },
+
+            // Logística
+            channel: raw.channel,
+            status: raw.status,
+            shippingMethod: raw.shippingMethod,
+            shippingCost: raw.shippingCost,
+
+            // Items
             items: this.cartItems().map(item => ({
                 productId: item.productId,
                 name: item.productName,
                 price: item.price,
                 quantity: item.quantity
-            }))
+            })),
+
+            total: this.totalCreateAmount(),
+            withoutBox: raw.withoutBox,
+            withoutCard: raw.withoutCard
         };
 
         this.orderService.createOrderAdmin(payload).subscribe({
@@ -215,24 +289,18 @@ export class OrderFormComponent implements OnInit {
         });
     }
 
+    // --- MÉTODOS DE EDIÇÃO / ESTADO (Mantidos) ---
     async onStatusChange(event: Event) {
         if (!this.order) return;
-
         const select = event.target as HTMLSelectElement;
         const newStatus = select.value;
         const oldStatus = this.order.status;
 
         let message = `Mudar estado para ${newStatus}?`;
+        if (newStatus === 'CANCELLED') message = `⚠️ ATENÇÃO: Ao CANCELAR, os artigos voltam para stock. Confirmar?`;
+        else if (newStatus === 'RETURNED') message = `⚠️ ATENÇÃO: Ao DEVOLVER, os artigos voltam para stock. Confirmar?`;
 
-        if (newStatus === 'CANCELLED') {
-            message = `⚠️ ATENÇÃO: Ao CANCELAR, os artigos voltam para o stock e NÃO há reembolso. Tem a certeza?`;
-        } else if (newStatus === 'RETURNED') {
-             message = `⚠️ ATENÇÃO: Ao DEVOLVER, os artigos voltam para o stock e será gerado um REEMBOLSO. Tem a certeza?`;
-        }
-
-        const confirmed = await this.notify.confirm(message, 'Sim, confirmar');
-
-        if (confirmed) {
+        if (await this.notify.confirm(message)) {
             this.isLoading = true;
             this.orderService.updateStatus(this.order.id, newStatus).subscribe({
                 next: (updatedOrder) => {
@@ -244,7 +312,7 @@ export class OrderFormComponent implements OnInit {
                 error: (err) => {
                     this.isLoading = false;
                     select.value = oldStatus;
-                    this.notify.apiError(err, 'Não foi possível mudar o estado');
+                    this.notify.apiError(err, 'Erro ao mudar estado');
                 }
             });
         } else {
@@ -260,7 +328,7 @@ export class OrderFormComponent implements OnInit {
             error: () => {
                 if (!this.order) return;
                 this.order.invoiceIssued = originalState;
-                this.notify.error('Erro ao atualizar estado da fatura');
+                this.notify.error('Erro ao atualizar fatura');
             }
         });
     }

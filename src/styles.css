@@ -112,3 +112,33 @@ textarea.input-lumiere {
     resize: vertical;
     min-height: 80px;
 }
+/* =========================================================
+   REGRAS GLOBAIS DE IMPRESSÃO
+   ========================================================= */
+@media print {
+
+  app-sidebar,
+    app-header,
+    app-admin-layout > aside,  /* Tenta apanhar a barra lateral */
+    app-admin-layout > header, /* Tenta apanhar o cabeçalho */
+    nav,
+    aside,
+    header {
+      display: none !important;
+    }
+
+    /* 2. Remove margens do layout principal para não empurrar o papel */
+    .admin-main-content,
+    .layout-wrapper,
+    app-root {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    /* 3. Garante que o fundo é branco (remove o fundo cinza do admin) */
+    body, html {
+      background-color: white !important;
+    }
+}

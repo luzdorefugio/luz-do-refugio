@@ -9,40 +9,27 @@ import { MaterialFormComponent } from '../material-form/material-form.component'
 import { NotificationService } from '../../../../../core/services/notification.service';
 
 @Component({
-  selector: 'app-material-list',
-  standalone: true,
-  // Adiciona ReactiveFormsModule aqui para o formulário de compra funcionar
-  imports: [CommonModule, MaterialFormComponent, ReactiveFormsModule],
-  templateUrl: './material-list.component.html'
+    selector: 'app-material-list',
+    imports: [CommonModule, MaterialFormComponent, ReactiveFormsModule],
+    templateUrl: './material-list.component.html'
 })
 export class MaterialListComponent implements OnInit {
-
-    // Injeção de dependências
     private service = inject(MaterialService);
     private notiService = inject(NotificationService);
     private fb = inject(FormBuilder);
-
-    // --- ESTADO (SIGNALS) ---
     materials = signal<Material[]>([]); // Lista completa vinda do backend
     isLoading = signal(true);
-
-    // Filtros
     showInactive = signal(false); // Controla a checkbox
-
-    // Modais
     isModalOpen = signal(false); // Modal de Criar/Editar
     selectedMaterial = signal<Material | null>(null); // Material a editar
-
-    // Modal de Compra
     selectedMaterialForPurchase = signal<Material | null>(null);
     purchaseForm: FormGroup;
+    isSubmitting = signal(false);
+    isPurchaseModalOpen = signal(false)
 
-    // --- COMPUTED SIGNALS (A Magia do Angular 17+) ---
-    // Esta lista recalcula-se sozinha sempre que 'materials' ou 'showInactive' mudam
     visibleMaterials = computed(() => {
         const allMaterials = this.materials();
         const show = this.showInactive();
-
         if (show) {
             return allMaterials; // Mostra tudo
         }
@@ -109,9 +96,11 @@ export class MaterialListComponent implements OnInit {
     openPurchaseModal(material: Material) {
         this.selectedMaterialForPurchase.set(material);
         this.purchaseForm.reset(); // Limpa o formulário
+        this.isPurchaseModalOpen.set(true);
     }
 
     closePurchaseModal() {
+        this.isPurchaseModalOpen.set(false);
         this.selectedMaterialForPurchase.set(null);
     }
 

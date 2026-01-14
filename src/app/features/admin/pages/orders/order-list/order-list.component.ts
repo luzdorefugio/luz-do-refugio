@@ -16,18 +16,36 @@ export class OrderListComponent implements OnInit {
     private orderService = inject(OrderService);
     private route = inject(ActivatedRoute);
     private router = inject(Router);
+
     orders = signal<Order[]>([]);
     isLoading = signal<boolean>(true);
-    isModalOpen = false;
-    selectedOrder: Order | null = null;
+
+    // Variáveis de Estado do Modal
+    isModalOpen = false; // Pode ser booleano normal
+    selectedOrder = signal<Order | null>(null); // Signal
 
     ngOnInit() {
         this.loadOrders();
+
+        // Lógica de Deep Linking (Abrir via URL)
         this.route.queryParams.subscribe(params => {
             const idToOpen = params['openId'];
-            if (idToOpen && this.orders().length > 0) {
-                const orderFound = this.orders().find(o => o.id === idToOpen);
-                this.openModal(orderFound);
+
+            if (idToOpen) {
+                this.orderService.getOrderById(idToOpen).subscribe({
+                    next: (order) => {
+                        this.openModal(order); // Reutiliza a função openModal
+
+                        // Limpa URL
+                        this.router.navigate([], {
+                            relativeTo: this.route,
+                            queryParams: { openId: null },
+                            queryParamsHandling: 'merge',
+                            replaceUrl: true
+                        });
+                    },
+                    error: () => console.warn('Encomenda do link não encontrada.')
+                });
             }
         });
     }
@@ -38,13 +56,6 @@ export class OrderListComponent implements OnInit {
             next: (data) => {
                 this.orders.set(data);
                 this.isLoading.set(false);
-                const idToOpen = this.route.snapshot.queryParams['openId'];
-                if (idToOpen) {
-                    const orderFound = this.orders().find(o => o.id === idToOpen);
-                    setTimeout(() => {
-                        this.openModal(orderFound);
-                    }, 0);
-                }
             },
             error: (err) => {
                 console.error(err);
@@ -53,21 +64,22 @@ export class OrderListComponent implements OnInit {
         });
     }
 
-  openModal(order?: Order) {
-    this.selectedOrder = order || null; // Se vier undefined, fica null (modo criar)
-    this.isModalOpen = true;
-  }
+    openModal(order?: Order) {
+        // CORREÇÃO: Usar .set()
+        this.selectedOrder.set(order || null);
+        this.isModalOpen = true;
+    }
 
-  // 2. Fechar Modal (Chamado pelo (close) do filho)
-  handleModalClose() {
-    this.isModalOpen = false;
-    this.selectedOrder = null;
-  }
+    handleModalClose() {
+        this.isModalOpen = false;
+        // CORREÇÃO: Usar .set()
+        this.selectedOrder.set(null);
+    }
 
-  // 3. Salvar e Recarregar (Chamado pelo (save) do filho)
-  handleModalSave() {
-    this.isModalOpen = false;
-    this.selectedOrder = null;
-    this.loadOrders(); // Recarrega a lista para mostrar os dados novos
-  }
+    handleModalSave() {
+        this.isModalOpen = false;
+        // CORREÇÃO: Usar .set()
+        this.selectedOrder.set(null);
+        this.loadOrders();
+    }
 }

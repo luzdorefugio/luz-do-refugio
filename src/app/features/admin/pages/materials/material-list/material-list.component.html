@@ -63,9 +63,13 @@
 
                 <td class="p-4 text-right space-x-2">
                     @if(item.active) {
-                    <button (click)="openPurchaseModal(item)" class="text-green-600 hover:bg-green-50 p-1 rounded" title="Comprar">
-                        <i data-feather="shopping-cart" class="w-4 h-4"></i>
-                    </button>
+                        <button (click)="openPurchaseModal(item)" class="text-green-600 hover:bg-green-50 p-1 rounded" title="Comprar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                        </button>
                     }
 
                     <button (click)="openEdit(item)" class="text-gray-400 hover:text-[var(--lumiere-gold)]">
@@ -73,13 +77,13 @@
                     </button>
 
                     @if(item.active) {
-                    <button (click)="deleteMaterial(item.id!)" class="text-gray-400 hover:text-red-500" title="Desativar">
-                        🗑
-                    </button>
+                        <button (click)="deleteMaterial(item.id!)" class="text-gray-400 hover:text-red-500" title="Desativar">
+                            🗑
+                        </button>
                     } @else {
-                    <button (click)="restoreMaterial(item.id!)" class="text-gray-400 hover:text-green-500" title="Reativar">
-                        ♻️
-                    </button>
+                        <button (click)="restoreMaterial(item.id!)" class="text-gray-400 hover:text-green-500" title="Reativar">
+                            ♻️
+                        </button>
                     }
                 </td>
             </tr>
@@ -90,7 +94,74 @@
     </div>
 
     @if (isModalOpen()) {
-    <app-material-form [material]="selectedMaterial()" (close)="handleModalClose($event)">
-    </app-material-form>
+        <app-material-form [material]="selectedMaterial()" (close)="handleModalClose($event)">
+        </app-material-form>
+    }
+    @if (isPurchaseModalOpen()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-[fadeIn_0.2s]">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+
+            <div class="bg-[var(--lumiere-bordeaux)] text-white p-4 flex justify-between items-center">
+                <h3 class="font-serif-title font-bold text-lg">
+                    Comprar Material
+                </h3>
+                <button (click)="closePurchaseModal()" class="text-white/70 hover:text-white">✕</button>
+            </div>
+
+            <form [formGroup]="purchaseForm" (ngSubmit)="submitPurchase()" class="p-6 space-y-4">
+
+                <div class="bg-gray-50 p-3 rounded border border-gray-100 mb-4">
+                    <span class="text-xs uppercase font-bold text-gray-400 block">Material Selecionado</span>
+                    <span class="text-lg font-serif text-[var(--lumiere-bordeaux)]">
+                    {{ selectedMaterialForPurchase()?.name }}
+                </span>
+                    <span class="text-xs text-gray-500 ml-2">
+                    (Atual: {{ selectedMaterialForPurchase()?.quantityOnHand }} {{ selectedMaterialForPurchase()?.unit }})
+                </span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">
+                        Quantidade Comprada ({{ selectedMaterialForPurchase()?.unit }})
+                    </label>
+                    <input type="number" formControlName="quantity" step="0.01" min="0.01"
+                           class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-[var(--lumiere-gold)] outline-none"
+                           placeholder="Ex: 50">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">
+                        Custo Total (€)
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-2 text-gray-400">€</span>
+                        <input type="number" formControlName="totalCost" step="0.01" min="0.01"
+                               class="w-full pl-8 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-[var(--lumiere-gold)] outline-none"
+                               placeholder="Ex: 200.00">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">
+                        Nota / Fornecedor (Opcional)
+                    </label>
+                    <textarea formControlName="supplierNote" rows="2"
+                              class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-[var(--lumiere-gold)] outline-none resize-none"
+                              placeholder="Ex: Comprado na loja X, Fatura #123"></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button type="button" (click)="closePurchaseModal()"
+                            class="flex-1 py-2 text-gray-600 hover:bg-gray-100 rounded font-bold text-sm transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" [disabled]="purchaseForm.invalid || isSubmitting()"
+                            class="flex-1 bg-green-600 text-white py-2 rounded font-bold text-sm uppercase tracking-wider hover:bg-green-700 shadow-md disabled:opacity-50 transition-colors">
+                        @if(isSubmitting()) { A Guardar... } @else { Confirmar Compra }
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
     }
 </div>

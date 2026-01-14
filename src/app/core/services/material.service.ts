@@ -36,20 +36,10 @@ export class MaterialService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  // --- NOVAS FUNCIONALIDADES ---
-
-  /**
-   * Registar uma compra de material (Aumenta stock e regista despesa).
-   * Endpoint: POST /api/materials/{id}/purchase
-   */
-  purchaseMaterial(id: string, data: MaterialPurchaseRequest): Observable<void> {
+  purchaseMaterial(id: string, data: Material): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/${id}/purchase`, data);
   }
 
-  /**
-   * Reativar um material que estava inativo/apagado.
-   * Endpoint: POST /api/materials/{id}/restore
-   */
   restore(id: string): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/${id}/restore`, {});
   }

@@ -17,7 +17,7 @@
     }
     @else if (product(); as p) {
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 animate-[fadeIn_0.5s] mb-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 animate-[fadeIn_0.5s]">
 
         <div class="flex flex-col gap-4">
             <div class="relative group rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-white aspect-square max-h-[450px] mx-auto w-full flex items-center justify-center">
@@ -73,57 +73,133 @@
                 {{ p.description || 'Vela artesanal feita com cera de soja natural.' }}
             </p>
 
-            <div class="bg-[var(--lumiere-cream)]/30 rounded-xl p-5 border border-[var(--lumiere-gold)]/20 mb-8 space-y-5 shadow-sm">
-                <h3 class="text-xs font-bold uppercase tracking-widest text-[#5c0a0a] flex items-center gap-2">
-                    ✨ Perfil Olfativo
-                </h3>
+                @if (p.name.includes('Pack')) {
+                <div class="bg-rose-50/50 rounded-xl p-6 border border-rose-100 mb-8 shadow-sm">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-[#5c0a0a] flex items-center gap-2 mb-4">
+                        🎁 O que inclui este Pack?
+                    </h3>
 
-                <div class="space-y-3 text-sm">
-                    <div class="flex items-start gap-3">
-                        <span class="text-lg w-6 text-center leading-none mt-0.5" title="Notas de Saída">🌬️</span>
-                        <div>
-                            <span class="text-[10px] font-bold text-gray-400 uppercase block tracking-wider">Topo (Saída)</span>
-                            <p class="text-gray-700 font-medium capitalize">{{ p.topNote || 'Notas frescas' }}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <span class="text-lg w-6 text-center leading-none mt-0.5" title="Notas de Coração">💖</span>
-                        <div>
-                            <span class="text-[10px] font-bold text-gray-400 uppercase block tracking-wider">Coração (Corpo)</span>
-                            <p class="text-gray-700 font-medium capitalize">{{ p.heartNote || 'Notas florais' }}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <span class="text-lg w-6 text-center leading-none mt-0.5" title="Notas de Fundo">🪵</span>
-                        <div>
-                            <span class="text-[10px] font-bold text-gray-400 uppercase block tracking-wider">Fundo (Base)</span>
-                            <p class="text-gray-700 font-medium capitalize">{{ p.baseNote || 'Notas amadeiradas' }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="border-t border-gray-200/50 pt-4 grid grid-cols-2 gap-4">
-                    <div>
-                        <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Tempo de Queima</span>
-                        <p class="text-sm font-bold text-gray-700">{{ p.burnTime || 'N/A' }}</p>
-                    </div>
-                    <div>
-                        <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Intensidade</span>
-                        <div class="flex gap-1 mt-1" [title]="'Intensidade: ' + (p.intensity || 0) + '/5'">
-                            @for (dot of [1, 2, 3, 4, 5]; track dot) {
-                            <div class="w-2 h-2 rounded-full border transition-colors"
-                                 [class.bg-[#5c0a0a]]="dot <= (p.intensity || 0)"
-                                 [class.border-[#5c0a0a]]="dot <= (p.intensity || 0)"
-                                 [class.bg-transparent]="dot > (p.intensity || 0)"
-                                 [class.border-gray-300]="dot > (p.intensity || 0)">
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <div class="bg-white p-1.5 rounded-full shadow-sm text-lg">🕯️</div>
+                            <div>
+                                <span class="text-xs font-bold text-rose-400 uppercase tracking-wider block">Vela 1</span>
+                                <p class="text-gray-700 font-medium">
+                                    @if (p.name.includes('Doce Coração')) {
+                                        Pistacho Royal (Doce & Quente)
+                                    } @else {
+                                        Vela da Foz (Fresca & Marinha)
+                                    }
+                                </p>
                             </div>
-                            }
+                        </li>
+
+                        <li class="flex items-start gap-3">
+                            <div class="bg-white p-1.5 rounded-full shadow-sm text-lg">🕯️</div>
+                            <div>
+                                <span class="text-xs font-bold text-rose-400 uppercase tracking-wider block">Vela 2</span>
+                                <p class="text-gray-700 font-medium">Coração de Luz (Floral & Mística)</p>
+                            </div>
+                        </li>
+
+                        <li class="flex items-start gap-3">
+                            <div class="bg-white p-1.5 rounded-full shadow-sm text-lg">✨</div>
+                            <div>
+                                <span class="text-xs font-bold text-rose-400 uppercase tracking-wider block">Extras</span>
+                                <p class="text-gray-700 font-medium">Caixa de Presente Premium + Postal</p>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="mt-6 pt-4 border-t border-rose-100/50 text-center">
+                        <p class="text-xs text-rose-800 italic">
+                            "A combinação perfeita para criar memórias inesquecíveis."
+                        </p>
+                    </div>
+                </div>
+
+                } @else {
+                <div class="bg-[var(--lumiere-cream)]/30 rounded-xl p-5 border border-[var(--lumiere-gold)]/20 mb-8 space-y-5 shadow-sm">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-[#5c0a0a] flex items-center gap-2">
+                        ✨ Perfil Olfativo
+                    </h3>
+
+                    <div class="space-y-3 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="text-lg w-6 text-center leading-none mt-0.5" title="Notas de Saída">🌬️</span>
+                            <div>
+                                <span class="text-[10px] font-bold text-gray-400 uppercase block tracking-wider">Topo (Saída)</span>
+                                <p class="text-gray-700 font-medium capitalize">{{ p.topNote || 'Notas frescas' }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-lg w-6 text-center leading-none mt-0.5" title="Notas de Coração">💖</span>
+                            <div>
+                                <span class="text-[10px] font-bold text-gray-400 uppercase block tracking-wider">Coração (Corpo)</span>
+                                <p class="text-gray-700 font-medium capitalize">{{ p.heartNote || 'Notas florais' }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="text-lg w-6 text-center leading-none mt-0.5" title="Notas de Fundo">🪵</span>
+                            <div>
+                                <span class="text-[10px] font-bold text-gray-400 uppercase block tracking-wider">Fundo (Base)</span>
+                                <p class="text-gray-700 font-medium capitalize">{{ p.baseNote || 'Notas amadeiradas' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-200/50 pt-4 grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Tempo de Queima</span>
+                            <p class="text-sm font-bold text-gray-700">{{ p.burnTime || 'N/A' }}</p>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Intensidade</span>
+                            <div class="flex gap-1 mt-1" [title]="'Intensidade: ' + (p.intensity || 0) + '/5'">
+                                @for (dot of [1, 2, 3, 4, 5]; track dot) {
+                                <div class="w-2 h-2 rounded-full border transition-colors"
+                                     [class.bg-[#5c0a0a]]="dot <= (p.intensity || 0)"
+                                     [class.border-[#5c0a0a]]="dot <= (p.intensity || 0)"
+                                     [class.bg-transparent]="dot > (p.intensity || 0)"
+                                     [class.border-gray-300]="dot > (p.intensity || 0)">
+                                </div>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
+            }
+            <div class="mt-auto border-t border-gray-100 pt-6">
+                @if (p.stock > 0) {
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center border border-gray-300 rounded-lg h-12 bg-white shadow-sm w-32 justify-between px-1">
+                        <button (click)="decrementQty()"
+                                [disabled]="quantity() <= 1"
+                                class="w-8 h-full flex items-center justify-center text-gray-400 hover:text-[#5c0a0a] disabled:opacity-30 text-lg transition-colors font-bold">
+                            −
+                        </button>
+                        <span class="font-bold text-gray-800 text-base select-none">{{ quantity() }}</span>
+                        <button (click)="incrementQty()"
+                                [disabled]="quantity() >= p.stock"
+                                class="w-8 h-full flex items-center justify-center text-gray-400 hover:text-[#5c0a0a] disabled:opacity-30 text-lg transition-colors font-bold">
+                            +
+                        </button>
+                    </div>
+                    <button (click)="addToCart()"
+                            class="flex-1 bg-[#5c0a0a] hover:bg-[#3d0210] text-[#f9f5f0] h-12 rounded-lg font-bold text-sm uppercase tracking-widest shadow-md hover:shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 group">
+                        <span class="group-hover:hidden">Adicionar ao Carrinho</span>
+                        <span class="hidden group-hover:inline">Comprar Agora</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                    </button>
+                </div>
+                } @else {
+                    <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200">
+                        <p class="text-gray-500 text-sm font-medium">Produto indisponível de momento.</p>
+                        <button class="mt-2 text-xs text-[#5c0a0a] underline font-bold">Avise-me quando chegar</button>
+                    </div>
+                }
             </div>
-
-            <div class="grid grid-cols-2 gap-y-3 gap-x-4 mb-8 text-xs text-gray-500 font-medium opacity-80">
+            <div class="grid grid-cols-2 gap-y-3 gap-x-4 mt-8 text-xs text-gray-500 font-medium opacity-80">
                 <div class="flex items-center gap-2">
                     <span class="flex items-center justify-center w-5 h-5 bg-green-50 text-green-700 rounded-full text-[10px]">🌿</span>
                     100% Cera de Soja
@@ -141,42 +217,10 @@
                     Made in Portugal
                 </div>
             </div>
-
-            <div class="mt-auto border-t border-gray-100 pt-6">
-                @if (p.stock > 0) {
-                <div class="flex items-center gap-3">
-                    <div class="flex items-center border border-gray-300 rounded-lg h-12 bg-white shadow-sm w-32 justify-between px-1">
-                        <button (click)="decrementQty()"
-                                [disabled]="quantity() <= 1"
-                                class="w-8 h-full flex items-center justify-center text-gray-400 hover:text-[#5c0a0a] disabled:opacity-30 text-lg transition-colors font-bold">
-                            −
-                        </button>
-                        <span class="font-bold text-gray-800 text-base select-none">{{ quantity() }}</span>
-                        <button (click)="incrementQty()"
-                                [disabled]="quantity() >= p.stock"
-                                class="w-8 h-full flex items-center justify-center text-gray-400 hover:text-[#5c0a0a] disabled:opacity-30 text-lg transition-colors font-bold">
-                            +
-                        </button>
-                    </div>
-
-                    <button (click)="addToCart()"
-                            class="flex-1 bg-[#5c0a0a] hover:bg-[#3d0210] text-[#f9f5f0] h-12 rounded-lg font-bold text-sm uppercase tracking-widest shadow-md hover:shadow-lg transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 group">
-                        <span class="group-hover:hidden">Adicionar ao Carrinho</span>
-                        <span class="hidden group-hover:inline">Comprar Agora</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                    </button>
-                </div>
-                } @else {
-                <div class="bg-gray-50 p-4 rounded-lg text-center border border-gray-200">
-                    <p class="text-gray-500 text-sm font-medium">Produto indisponível de momento.</p>
-                    <button class="mt-2 text-xs text-[#5c0a0a] underline font-bold">Avise-me quando chegar</button>
-                </div>
-                }
-            </div>
         </div>
     </div>
 
-    <div class="py-16 border-t border-gray-100 animate-[fadeIn_0.5s] delay-100">
+    <div class="mb-16 border-t border-gray-100 animate-[fadeIn_0.5s] delay-100">
 
         <div class="flex flex-col md:flex-row gap-12">
 

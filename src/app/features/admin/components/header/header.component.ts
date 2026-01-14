@@ -1,6 +1,6 @@
 import { Component, inject, AfterViewInit, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router'; // <--- IMPORTANTE: Necessário para os links do dropdown funcionarem
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { OrderService } from '../../../../core/services/order.service';
 
@@ -22,10 +22,7 @@ export class HeaderComponent implements AfterViewInit, OnInit, OnDestroy {
      isOpen = signal(false);
 
     ngOnInit() {
-        // 1. Verificar o número logo ao abrir a página
         this.checkNotifications();
-
-        // 2. Verificar automaticamente a cada 60 segundos (Polling)
         this.intervalId = setInterval(() => {
             this.checkNotifications();
         }, 60000);

@@ -4,6 +4,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MaterialListComponent } from './pages/materials/material-list/material-list.component';
 import { ProductListComponent } from './pages/products/product-list/product-list.component';
 import { OrderListComponent } from './pages/orders/order-list/order-list.component';
+import { PrintCardComponent } from './pages/orders/print-card/print-card.component';
 import { StockMovementListComponent } from './pages/stock/stock-movement-list/stock-movement-list.component';
 import { PromotionsListComponent } from './pages/promotions/promotion-list/promotion-list.component';
 import { ShippingListComponent } from './pages/shipping/shipping-list/shipping-list.component';
@@ -22,6 +23,7 @@ export const ADMIN_ROUTES: Routes = [
       { path: 'materiais', component: MaterialListComponent },
       { path: 'produtos', component: ProductListComponent },
       { path: 'encomendas', component: OrderListComponent },
+      { path: 'print/:id', component: PrintCardComponent },
       { path: 'stock-movements', component: StockMovementListComponent },
       { path: 'promocoes', component: PromotionsListComponent },
       { path: 'envios', component: ShippingListComponent },

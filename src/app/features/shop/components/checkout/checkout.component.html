@@ -56,33 +56,59 @@
                 @if (cartService.cartItems().length === 0) {
                 <div class="text-center py-10">
                     <p class="text-gray-500 mb-4">O teu carrinho está vazio.</p>
-                    <a routerLink="/loja" class="btn-primary-lumiere inline-block">Ir para a Loja</a>
+                    <a routerLink="/loja" [queryParams]="{ source: 'account' }"
+                       class="btn-primary-lumiere inline-block">Ir para a Loja</a>
                 </div>
                 } @else {
                 <div class="overflow-x-auto">
-                    <table class="w-full mb-8">
+                    <table class="w-full mb-8 align-middle">
                         <thead class="bg-gray-50 border-b border-gray-200">
                         <tr>
-                            <th class="text-left py-3 px-4 text-gray-500 text-sm font-medium">Produto</th>
-                            <th class="text-center py-3 px-4 text-gray-500 text-sm font-medium">Qtd</th>
-                            <th class="text-right py-3 px-4 text-gray-500 text-sm font-medium">Subtotal</th>
+                            <th class="text-left py-3 px-4 text-gray-500 text-xs font-bold uppercase tracking-wider w-[50%]">Produto</th>
+                            <th class="text-center py-3 px-4 text-gray-500 text-xs font-bold uppercase tracking-wider">Qtd</th>
+                            <th class="text-right py-3 px-4 text-gray-500 text-xs font-bold uppercase tracking-wider">Total</th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-gray-100">
                         @for (item of cartService.cartItems(); track item.productId) {
-                        <tr class="border-b border-gray-100 last:border-0">
-                            <td class="py-4 px-4 flex items-center gap-4">
-                                <span class="font-medium text-gray-700">{{ item.name }}</span>
-                            </td>
-                            <td class="py-4 px-4 text-center">
-                                <div class="inline-flex items-center border rounded-md">
-                                    <button class="px-2 py-1 hover:bg-gray-100" (click)="cartService.updateQuantity(item.productId, item.quantity - 1)">-</button>
-                                    <span class="px-2 text-sm font-medium w-8">{{ item.quantity }}</span>
-                                    <button class="px-2 py-1 hover:bg-gray-100" (click)="cartService.updateQuantity(item.productId, item.quantity + 1)">+</button>
+                        <tr class="group hover:bg-[#fcfbf7] transition-colors">
+
+                            <td class="py-4 px-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 rounded-lg bg-white border border-gray-200 p-1 flex-shrink-0 shadow-sm overflow-hidden relative">
+                                        <img [src]="'/logo-velas/' + item.sku + '.png'"
+                                             [alt]="item.name" class="w-full h-full object-cover rounded-md">
+                                    </div>
+
+                                    <div class="flex flex-col">
+                        <span class="font-serif-title font-bold text-gray-800 text-base leading-tight group-hover:text-[var(--lumiere-bordeaux)] transition-colors">
+                            {{ item.name }}
+                        </span>
+                                        <span class="text-xs text-gray-400 mt-1">Ref: {{ item.sku }}</span>
+                                    </div>
                                 </div>
                             </td>
-                            <td class="py-4 px-4 text-right font-medium text-[var(--lumiere-bordeaux)]">
-                                {{ item.price * item.quantity | currency:'EUR' }}
+
+                            <td class="py-4 px-4">
+                                <div class="flex justify-center">
+                                    <div class="inline-flex items-center bg-white border border-gray-200 rounded-lg shadow-sm h-8">
+                                        <button class="w-8 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-black rounded-l-lg transition-colors"
+                                                (click)="cartService.updateQuantity(item.productId, item.quantity - 1)">
+                                            −
+                                        </button>
+                                        <span class="w-8 text-center text-sm font-bold text-gray-700 select-none">{{ item.quantity }}</span>
+                                        <button class="w-8 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-black rounded-r-lg transition-colors"
+                                                (click)="cartService.updateQuantity(item.productId, item.quantity + 1)">
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="py-4 px-4 text-right">
+                <span class="font-bold text-[var(--lumiere-bordeaux)] text-lg font-serif-title">
+                    {{ item.price * item.quantity | currency:'EUR' }}
+                </span>
                             </td>
                         </tr>
                         }
@@ -106,109 +132,234 @@
 
             @if (currentStep() === 2) {
             <div class="animate-[fadeIn_0.3s]">
-                <h2 class="text-xl font-bold text-[var(--lumiere-bordeaux)] mb-6">Os teus Dados</h2>
+
+                <h2 class="text-xl font-bold text-[var(--lumiere-bordeaux)] mb-6 text-center">
+                    A quem se destina esta luz?
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                    <div (click)="setMode(false)"
+                         class="relative p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 flex flex-col items-center gap-3 group hover:shadow-lg"
+                         [class.border-[var(--lumiere-bordeaux)]]="!isGiftMode()"
+                         [class.bg-[#fcfbf7]]]="!isGiftMode()"
+                         [class.border-gray-200]="isGiftMode()">
+
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-colors"
+                             [class.bg-[var(--lumiere-bordeaux)]]="!isGiftMode()"
+                             [class.text-white]="!isGiftMode()"
+                             [class.bg-gray-100]="isGiftMode()">
+                            🏠
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800">Para Mim</h3>
+                        <p class="text-xs text-gray-500 text-center">Vou receber a encomenda na minha morada.</p>
+
+                        @if (!isGiftMode()) {
+                        <div class="absolute top-3 right-3 text-[var(--lumiere-bordeaux)]">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        </div>
+                        }
+                    </div>
+
+                    <div (click)="setMode(true)"
+                         class="relative p-6 border-2 rounded-xl cursor-pointer transition-all duration-300 flex flex-col items-center gap-3 group hover:shadow-lg"
+                         [class.border-[var(--lumiere-bordeaux)]]="isGiftMode()"
+                         [class.bg-[#fcfbf7]]]="isGiftMode()"
+                         [class.border-gray-200]="!isGiftMode()">
+
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-colors"
+                             [class.bg-[var(--lumiere-bordeaux)]]="isGiftMode()"
+                             [class.text-white]="isGiftMode()"
+                             [class.bg-gray-100]="!isGiftMode()">
+                            🎁
+                        </div>
+                        <h3 class="font-bold text-lg text-gray-800">É uma Oferta</h3>
+                        <p class="text-xs text-gray-500 text-center">Vou enviar diretamente para outra pessoa.</p>
+
+                        @if (isGiftMode()) {
+                        <div class="absolute top-3 right-3 text-[var(--lumiere-bordeaux)]">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                        </div>
+                        }
+                    </div>
+                </div>
 
                 <form [formGroup]="checkoutForm">
-                    <div formGroupName="customer" class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-                        <div class="space-y-4">
-                            <h3 class="font-bold text-gray-700 border-b pb-2">Identificação</h3>
+                    <div class="mb-10 animate-[slideUp_0.4s]">
+                        <h3 class="flex items-center gap-2 font-bold text-gray-700 border-b pb-2 mb-6">
+                            <span class="bg-gray-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+                            {{ isGiftMode() ? 'Dados do Destinatário (Quem recebe)' : 'Os teus dados de envio' }}
+                        </h3>
 
-                            <div>
-                                <label class="block text-sm text-gray-600 mb-1">Nome Completo *</label>
-                                <input formControlName="name" type="text" class="input-lumiere"
-                                       [class.border-red-500]="isFieldInvalid('customer.name')" placeholder="O teu nome">
-                                @if (isFieldInvalid('customer.name')) {
-                                <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">O nome é obrigatório.</span>
-                                }
-                            </div>
-
-                            <div>
-                                <label class="block text-sm text-gray-600 mb-1">Email *</label>
-                                <input formControlName="email" type="email" class="input-lumiere"
-                                       [class.border-red-500]="isFieldInvalid('customer.email')" placeholder="email@exemplo.com">
-                                @if (isFieldInvalid('customer.email')) {
-                                <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">Email inválido ou em falta.</span>
-                                }
-                            </div>
-
-                            <div>
-                                <label class="block text-sm text-gray-600 mb-1">Telemóvel *</label>
-                                <input formControlName="phone" type="text" class="input-lumiere"
-                                       [class.border-red-500]="isFieldInvalid('customer.phone')">
-                                @if (isFieldInvalid('customer.phone')) {
-                                <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">Contacto obrigatório.</span>
-                                }
-                            </div>
-
-                            <div class="pt-2">
-                                <label class="flex items-center gap-2 cursor-pointer select-none">
-                                    <input formControlName="hasNif" type="checkbox" class="w-4 h-4 text-[var(--lumiere-bordeaux)] rounded focus:ring-[var(--lumiere-gold)]">
-                                    <span class="text-sm text-gray-700">Quero incluir NIF na fatura</span>
-                                </label>
-                                @if (checkoutForm.get('customer.hasNif')?.value) {
-                                <div class="mt-2 animate-[fadeIn_0.2s]">
-                                    <input formControlName="nif" type="text" class="input-lumiere" placeholder="Número de Contribuinte">
+                        <div formGroupName="shipping" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-1">Nome Completo *</label>
+                                    <input formControlName="fullName" type="text" class="input-lumiere" placeholder="Nome e Apelido">
+                                    @if (isFieldInvalid('shipping.fullName')) {
+                                    <span class="text-xs text-red-500">Nome obrigatório.</span>
+                                    }
                                 </div>
-                                }
+
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-1">Telemóvel (para a entrega) *</label>
+                                    <input formControlName="phone" type="text" class="input-lumiere"
+                                           [placeholder]="isGiftMode() ? 'Contacto do destinatário' : 'O teu contacto'">
+                                    @if(isGiftMode()) {
+                                    <p class="text-[10px] text-gray-400 mt-1">Necessário para a transportadora contactar na entrega.</p>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-1">Morada de Entrega *</label>
+                                    <input formControlName="address" type="text" class="input-lumiere" placeholder="Rua das Flores, nº 123, 2º Esq">
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-600 mb-1">Código Postal *</label>
+                                        <input formControlName="zipCode" type="text" class="input-lumiere" placeholder="0000-000">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-600 mb-1">Cidade *</label>
+                                        <input formControlName="city" type="text" class="input-lumiere" placeholder="Lisboa">
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="space-y-4">
-                            <h3 class="font-bold text-gray-700 border-b pb-2">Morada de Envio</h3>
+                    @if (isGiftMode()) {
+                    <div class="mb-10 animate-[slideUp_0.4s]" formGroupName="gift">
+                        <h3 class="flex items-center gap-2 font-bold text-[var(--lumiere-bordeaux)] border-b border-[var(--lumiere-gold)] pb-2 mb-6">
+                            <span class="bg-[var(--lumiere-bordeaux)] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
+                            Personalizar Oferta
+                        </h3>
 
-                            <div>
-                                <label class="block text-sm text-gray-600 mb-1">Rua e Número *</label>
-                                <input formControlName="address" type="text" class="input-lumiere"
-                                       [class.border-red-500]="isFieldInvalid('customer.address')" placeholder="Rua das Flores, nº 10">
-                                @if (isFieldInvalid('customer.address')) {
-                                <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">Morada obrigatória.</span>
+                        <div class="bg-[var(--lumiere-cream)]/30 p-6 rounded-xl border border-[var(--lumiere-gold)]/30">
+                            <div class="mb-4">
+                                <span class="block text-sm font-bold text-gray-700 mb-2">Mensagem da Dedicatória:</span>
+                                <div class="flex gap-4 text-sm">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" formControlName="messageType" value="custom" class="text-[var(--lumiere-bordeaux)] focus:ring-[var(--lumiere-gold)]">
+                                        <span>Escrever mensagem pessoal</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" formControlName="messageType" value="premade" class="text-[var(--lumiere-bordeaux)] focus:ring-[var(--lumiere-gold)]">
+                                        <span>Inspirações do Refúgio</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            @if (checkoutForm.get('gift.messageType')?.value === 'custom') {
+                            <div class="animate-[fadeIn_0.2s] relative">
+                                <textarea formControlName="messageText"
+                                          rows="3"
+                                          class="w-full input-lumiere resize-none bg-white font-handwriting text-lg"
+                                          placeholder="Escreve aqui a tua dedicatória especial..."></textarea>
+
+                                <div class="absolute bottom-2 right-2 text-[10px] text-gray-400 bg-white/80 px-1 rounded">
+                                    {{ checkoutForm.get('gift.messageText')?.value?.length || 0 }} / 250
+                                </div>
+
+                                @if (giftMessageControl?.errors?.['maxlength']) {
+                                <span class="text-xs text-red-500">Máximo de 250 caracteres atingido.</span>
                                 }
                             </div>
+                            }
 
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm text-gray-600 mb-1">Código Postal *</label>
-                                    <input formControlName="zipCode" type="text" class="input-lumiere"
-                                           [class.border-red-500]="isFieldInvalid('customer.zipCode')" placeholder="0000-000">
-                                    @if (isFieldInvalid('customer.zipCode')) {
-                                    <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">Obrigatório.</span>
-                                    }
+                            @if (checkoutForm.get('gift.messageType')?.value === 'premade') {
+                            <div class="animate-[fadeIn_0.2s] grid grid-cols-1 gap-2">
+                                @for (msg of preMadeMessages; track msg) {
+                                <div (click)="checkoutForm.get('gift.messageText')?.setValue(msg)"
+                                     class="p-3 border rounded-lg cursor-pointer transition-all hover:bg-white"
+                                     [class.border-[var(--lumiere-bordeaux)]]="checkoutForm.get('gift.messageText')?.value === msg"
+                                     [class.bg-white]="checkoutForm.get('gift.messageText')?.value === msg"
+                                     [class.bg-transparent]="checkoutForm.get('gift.messageText')?.value !== msg"
+                                     [class.border-gray-200]="checkoutForm.get('gift.messageText')?.value !== msg">
+                                    <p class="text-sm text-gray-600 italic">"{{ msg }}"</p>
                                 </div>
-
-                                <div>
-                                    <label class="block text-sm text-gray-600 mb-1">Cidade *</label>
-                                    <input formControlName="city" type="text" class="input-lumiere"
-                                           [class.border-red-500]="isFieldInvalid('customer.city')" placeholder="Lisboa">
-                                    @if (isFieldInvalid('customer.city')) {
-                                    <span class="text-xs text-red-500 animate-[fadeIn_0.2s]">Obrigatório.</span>
-                                    }
-                                </div>
-                            </div>
-
-                            <div class="pt-4">
-                                <label class="flex items-center gap-2 cursor-pointer text-sm text-gray-600 select-none">
-                                    <input formControlName="billingSameAsShipping" type="checkbox" class="w-4 h-4 text-[var(--lumiere-bordeaux)] rounded focus:ring-[var(--lumiere-gold)]">
-                                    Faturação igual à morada de envio?
-                                </label>
-                            </div>
-
-                            @if (authService.currentUser()) {
-                            <div class="col-span-1 md:col-span-2 mt-4 animate-[fadeIn_0.5s]">
-                                <label class="flex items-start gap-3 p-4 border border-[#d4af37]/30 bg-[#f9f5f0] rounded-lg cursor-pointer hover:bg-[#fdfbf7] transition-colors">
-                                    <div class="flex items-center h-5">
-                                        <input type="checkbox" formControlName="saveToProfile"
-                                               class="w-5 h-5 text-[var(--lumiere-bordeaux)] border-gray-300 rounded focus:ring-[var(--lumiere-gold)]">
-                                    </div>
-                                    <div class="text-sm">
-                                        <span class="font-bold text-[var(--lumiere-bordeaux)]">Guardar estes dados no meu perfil?</span>
-                                        <p class="text-gray-500 text-xs mt-1">
-                                            Atualiza a tua morada e contacto para a próxima compra.
-                                        </p>
-                                    </div>
-                                </label>
+                                }
                             </div>
                             }
+
+                            <div class="mt-4">
+                                <label class="block text-sm text-gray-600 mb-1">Assinar como: (Opcional)</label>
+                                <input formControlName="fromName" type="text" class="input-lumiere w-full md:w-1/2" placeholder="Ex: O teu admirador secreto">
+                            </div>
+
+                            <div class="mt-6 p-4 bg-[var(--lumiere-cream)] rounded-lg border border-dashed border-[var(--lumiere-gold)] flex items-start gap-3">
+                                <span class="text-2xl">💌</span>
+                                <div>
+                                    <p class="text-xs font-bold text-[var(--lumiere-bordeaux)] uppercase tracking-wider mb-1">Preview do Cartão</p>
+                                    <p class="font-serif italic text-gray-700 text-sm">
+                                        "{{ checkoutForm.get('gift.messageText')?.value || 'A tua mensagem aparecerá aqui...' }}"
+                                    </p>
+                                    @if (checkoutForm.get('gift.fromName')?.value) {
+                                    <p class="text-xs text-gray-500 mt-2 text-right">— {{ checkoutForm.get('gift.fromName')?.value }}</p>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    }
+
+                    <div class="mb-8 animate-[slideUp_0.4s]" formGroupName="billing">
+                        <h3 class="flex items-center gap-2 font-bold text-gray-700 border-b pb-2 mb-6">
+                            <span class="bg-gray-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">{{ isGiftMode() ? '3' : '2' }}</span>
+                            {{ isGiftMode() ? 'Os teus dados (Comprador)' : 'Faturação e Contacto' }}
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-1">O teu Email (para fatura e tracking) *</label>
+                                    <input formControlName="email" type="email" class="input-lumiere" placeholder="teu.email@exemplo.com">
+                                </div>
+
+                                @if (isGiftMode()) {
+                                <div class="animate-[fadeIn_0.2s]">
+                                    <label class="block text-sm text-gray-600 mb-1">Teu Nome Completo *</label>
+                                    <input formControlName="fullName" type="text" class="input-lumiere" placeholder="O teu nome">
+                                </div>
+                                }
+
+                                <div>
+                                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                                        <input formControlName="hasNif" type="checkbox" class="w-4 h-4 text-[var(--lumiere-bordeaux)] rounded focus:ring-[var(--lumiere-gold)]">
+                                        <span class="text-sm text-gray-700">Quero incluir NIF na fatura</span>
+                                    </label>
+                                    @if (checkoutForm.get('billing.hasNif')?.value) {
+                                    <div class="mt-2 animate-[fadeIn_0.2s]">
+                                        <input formControlName="nif" type="text" class="input-lumiere" placeholder="Número de Contribuinte">
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                                    <input formControlName="useShippingAddress" type="checkbox"
+                                           class="w-5 h-5 text-[var(--lumiere-bordeaux)] rounded focus:ring-[var(--lumiere-gold)]">
+                                    <span class="text-sm text-gray-700">
+                                        {{ isGiftMode() ? 'Usar a mesma morada do destinatário para a fatura?' : 'A morada de faturação é a mesma de envio?' }}
+                                    </span>
+                                </label>
+
+                                @if (!checkoutForm.get('billing.useShippingAddress')?.value) {
+                                <div class="animate-[fadeIn_0.3s] space-y-4 pt-2 border-l-2 border-gray-200 pl-4">
+                                    <p class="text-xs font-bold text-gray-400 uppercase">Morada Fiscal</p>
+                                    <input formControlName="address" type="text" class="input-lumiere" placeholder="Rua e Número">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <input formControlName="zipCode" type="text" class="input-lumiere" placeholder="Código Postal">
+                                        <input formControlName="city" type="text" class="input-lumiere" placeholder="Cidade">
+                                    </div>
+                                </div>
+                                }
+                            </div>
                         </div>
                     </div>
 
@@ -217,7 +368,7 @@
                             ← Voltar
                         </button>
                         <button type="button" (click)="goToStep(3)" class="btn-primary-lumiere">
-                            Seguinte: Envio e Pagamento →
+                            Seguinte: Pagamento →
                         </button>
                     </div>
                 </form>
@@ -325,14 +476,12 @@
                                 </h3>
 
                                 <div class="space-y-3">
-
                                     <label class="flex items-center gap-4 p-4 border rounded-xl cursor-pointer transition-all bg-white shadow-sm hover:shadow-md"
                                            [class.border-[var(--lumiere-bordeaux)]]="checkoutForm.get('payment.paymentMethod')?.value === 'MBWAY'"
                                            [class.bg-[#fcfbf7]]="checkoutForm.get('payment.paymentMethod')?.value === 'MBWAY'"
                                            [class.border-gray-200]="checkoutForm.get('payment.paymentMethod')?.value !== 'MBWAY'">
 
                                         <input type="radio" formControlName="paymentMethod" value="MBWAY" class="hidden">
-
                                         <div class="w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 transition-colors"
                                              [class.border-gray-300]="checkoutForm.get('payment.paymentMethod')?.value !== 'MBWAY'"
                                              [class.border-[var(--lumiere-bordeaux)]]="checkoutForm.get('payment.paymentMethod')?.value === 'MBWAY'">
@@ -340,7 +489,6 @@
                                             <div class="w-2.5 h-2.5 bg-[var(--lumiere-bordeaux)] rounded-full"></div>
                                             }
                                         </div>
-
                                         <div class="flex items-center gap-3">
                                             <span class="text-2xl">📱</span>
                                             <span class="font-medium text-gray-800">MB WAY</span>
@@ -353,16 +501,13 @@
                                            [class.border-gray-200]="checkoutForm.get('payment.paymentMethod')?.value !== 'TRANSFER'">
 
                                         <input type="radio" formControlName="paymentMethod" value="TRANSFER" class="hidden">
-
                                         <div class="w-5 h-5 rounded-full border flex items-center justify-center flex-shrink-0 transition-colors"
                                              [class.border-gray-300]="checkoutForm.get('payment.paymentMethod')?.value !== 'TRANSFER'"
                                              [class.border-[var(--lumiere-bordeaux)]]="checkoutForm.get('payment.paymentMethod')?.value === 'TRANSFER'">
-
                                             @if (checkoutForm.get('payment.paymentMethod')?.value === 'TRANSFER') {
                                             <div class="w-2.5 h-2.5 bg-[var(--lumiere-bordeaux)] rounded-full"></div>
                                             }
                                         </div>
-
                                         <div class="flex items-center gap-3">
                                             <span class="text-2xl">🏦</span>
                                             <span class="font-medium text-gray-800">Transferência Bancária</span>

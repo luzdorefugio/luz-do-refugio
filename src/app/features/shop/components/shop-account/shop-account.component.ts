@@ -14,27 +14,22 @@ import { Order } from '../../../../core/models/order.model';
   templateUrl: './shop-account.component.html'
 })
 export class ShopAccountComponent implements OnInit {
-
-  authService = inject(AuthService);
-  private orderService = inject(OrderService);
-  private notify = inject(NotificationService);
-  private router = inject(Router);
-  private fb = inject(FormBuilder);
-
-  // Dados do Utilizador (Signal)
-  currentUser = this.authService.currentUser;
-
-  // Estado das Encomendas
-  orders = signal<Order[]>([]);
-  isLoadingOrders = signal(true);
-
-  // Estado do Perfil
-  profileForm: FormGroup;
-  isSavingProfile = signal(false);
+    authService = inject(AuthService);
+    private orderService = inject(OrderService);
+    private notify = inject(NotificationService);
+    private router = inject(Router);
+    private fb = inject(FormBuilder);
+    currentUser = this.authService.currentUser;
+    orders = signal<Order[]>([]);
+    isLoadingOrders = signal(true);
+    profileForm: FormGroup;
+    isSavingProfile = signal(false);
+    expandedOrders = new Set<string>();
 
   constructor() {
-    // Inicializar formulário de perfil
     this.profileForm = this.fb.group({
+      name: ['', Validators.required], // Adicionei o nome também para ser editável
+      email: ['', [Validators.required, Validators.email]], // <-- NOVO: Email
       phone: [''],
       address: [''],
       city: [''],
@@ -46,17 +41,15 @@ export class ShopAccountComponent implements OnInit {
   ngOnInit() {
     const user = this.currentUser();
 
-    // 1. Segurança: Se não houver user, mandar para login
     if (!user) {
       this.router.navigate(['/login']);
       return;
     }
 
-    // 2. Carregar Encomendas
+    // Carregar Encomendas
     if (user.email) {
       this.orderService.getOrdersByCustomerEmail(user.email).subscribe({
         next: (data) => {
-          // Ordenar: Mais recentes primeiro
           const sorted = data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
           this.orders.set(sorted);
           this.isLoadingOrders.set(false);
@@ -65,8 +58,10 @@ export class ShopAccountComponent implements OnInit {
       });
     }
 
-    // 3. Preencher Formulário com dados atuais
+    // Preencher Formulário
     this.profileForm.patchValue({
+      name: user.name || '',
+      email: user.email || '', // <-- Preencher Email
       phone: user.phone || '',
       address: user.address || '',
       city: user.city || '',
@@ -75,17 +70,14 @@ export class ShopAccountComponent implements OnInit {
     });
   }
 
-expandedOrders = new Set<string>();
-
   toggleDetails(order: any) {
     if (this.expandedOrders.has(order.id)) {
-      this.expandedOrders.delete(order.id); // Fecha se já estiver aberto
+      this.expandedOrders.delete(order.id);
     } else {
-      this.expandedOrders.add(order.id); // Abre se estiver fechado
+      this.expandedOrders.add(order.id);
     }
   }
 
-  // Ação: Guardar Dados Pessoais
   saveProfile() {
     if (this.profileForm.invalid) return;
 
@@ -109,7 +101,6 @@ expandedOrders = new Set<string>();
     this.router.navigate(['/loja']);
   }
 
-  // Helpers Visuais
   getStatusColor(status: string): string {
     const colors: any = {
       'PENDING': 'bg-yellow-100 text-yellow-800 border-yellow-200',

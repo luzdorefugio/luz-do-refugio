@@ -1,76 +1,69 @@
 <div class="min-h-[70vh] flex flex-col items-center justify-center text-center px-4 py-12 animate-[fadeIn_0.5s]">
-
     <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center text-green-600 mb-6 shadow-sm">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
-
     <h1 class="font-serif-title text-3xl md:text-4xl font-bold text-[#5c0a0a] mb-4">
         Encomenda Registada!
     </h1>
-
     @if (order(); as o) {
     <p class="text-gray-600 text-lg max-w-md mx-auto mb-2">
         Obrigado, <span class="font-bold text-gray-800">{{ o.customerName }}</span>.
     </p>
     <p class="text-gray-500 mb-8">A referência do seu pedido é <span class="font-mono font-bold text-[#5c0a0a]">#{{ o.id.substring(0,8) }}</span></p>
-
     <div class="w-full max-w-md bg-white border-2 border-[#d4af37]/30 rounded-xl p-6 shadow-lg mb-8 relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#5c0a0a] via-[#d4af37] to-[#5c0a0a]"></div>
-
         <h3 class="font-bold text-gray-800 mb-4 flex items-center justify-center gap-2 uppercase tracking-wide text-sm">
             Dados para Pagamento
         </h3>
-
         @if (o.paymentMethod === 'MBWAY') {
-        <div class="space-y-4">
-            <div class="flex items-center justify-center gap-2 text-[#5c0a0a]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-                <span class="font-bold">MB WAY</span>
+            <div class="space-y-4">
+                <div class="flex items-center justify-center gap-2 text-[#5c0a0a]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                    <span class="font-bold">MB WAY</span>
+                </div>
+                <p class="text-sm text-gray-600">Envie <span class="font-bold text-black">{{ o.totalAmount | currency:'EUR' }}</span> para:</p>
+                <div class="bg-gray-100 py-3 rounded-lg border border-gray-200">
+                    <span class="text-2xl font-mono font-bold tracking-wider">935 470 654</span>
+                </div>
+                <p class="text-xs text-gray-400">Mencione o n.º da encomenda na descrição.</p>
             </div>
-
-            <p class="text-sm text-gray-600">Envie <span class="font-bold text-black">{{ o.totalAmount | currency:'EUR' }}</span> para:</p>
-
-            <div class="bg-gray-100 py-3 rounded-lg border border-gray-200">
-                <span class="text-2xl font-mono font-bold tracking-wider">912 345 678</span>
-            </div>
-            <p class="text-xs text-gray-400">Mencione o nº da encomenda na descrição.</p>
-        </div>
         }
-
         @if (o.paymentMethod === 'TRANSFER') {
-        <div class="space-y-4">
-            <div class="flex items-center justify-center gap-2 text-[#5c0a0a]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                <span class="font-bold">Transferência Bancária</span>
+            <div class="space-y-4">
+                <div class="flex items-center justify-center gap-2 text-[#5c0a0a]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                    <span class="font-bold">Transferência Bancária</span>
+                </div>
+                <div class="text-left space-y-2 bg-gray-50 p-4 rounded-lg text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Beneficiário:</span>
+                        <span class="font-medium">João Paulo Simões Filipe</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">IBAN:</span>
+                        <span class="font-mono font-bold">PT50 0045 8727 4040 6857 4933 4</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">BIC:</span>
+                        <span class="font-mono font-bold">CCCMPTPL</span>
+                    </div>
+                    <div class="flex justify-between border-t border-gray-200 pt-2 mt-2">
+                        <span class="text-gray-500">Valor:</span>
+                        <span class="font-bold text-[#5c0a0a]">{{ o.totalAmount | currency:'EUR' }}</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400">Envie o comprovativo para encomendas&#64;luzdorefugio.pt</p>
             </div>
-
-            <div class="text-left space-y-2 bg-gray-50 p-4 rounded-lg text-sm">
-                <div class="flex justify-between">
-                    <span class="text-gray-500">Banco:</span>
-                    <span class="font-medium">Millennium BCP</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500">IBAN:</span>
-                    <span class="font-mono font-bold">PT50 0033 0000 1234 5678 90</span>
-                </div>
-                <div class="flex justify-between border-t border-gray-200 pt-2 mt-2">
-                    <span class="text-gray-500">Valor:</span>
-                    <span class="font-bold text-[#5c0a0a]">{{ o.totalAmount | currency:'EUR' }}</span>
-                </div>
-            </div>
-            <p class="text-xs text-gray-400">Envie o comprovativo para encomendas&#64;luzdorefugio.pt</p>
-        </div>
         }
     </div>
     }
 
     @else if (isLoading()) {
-    <div class="animate-pulse space-y-4 w-full max-w-md mx-auto">
-        <div class="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
-        <div class="h-40 bg-gray-200 rounded-xl"></div>
-    </div>
+        <div class="animate-pulse space-y-4 w-full max-w-md mx-auto">
+            <div class="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+            <div class="h-40 bg-gray-200 rounded-xl"></div>
+        </div>
     }
-
     <div class="flex gap-4">
         <a routerLink="/loja/minha-conta" class="px-6 py-3 border border-[#5c0a0a] text-[#5c0a0a] font-bold rounded-lg hover:bg-gray-50 transition-colors">
             Ver Encomenda

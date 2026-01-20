@@ -1,0 +1,85 @@
+<div class="p-8">
+
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-serif-title font-bold text-[var(--lumiere-bordeaux)]">Mensagens</h1>
+            <p class="text-gray-500">Contactos recebidos através da loja online.</p>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                <input type="checkbox" (change)="toggleShowRead()" class="rounded border-gray-300 text-[var(--lumiere-bordeaux)]">
+                Mostrar Lidas
+            </label>
+            <button (click)="loadData()" class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100" title="Atualizar">
+                🔄
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
+
+        @if (isLoading()) {
+        <div class="p-10 text-center text-gray-400">A carregar mensagens...</div>
+        } @else if (visibleContacts().length === 0) {
+        <div class="p-16 text-center">
+            <div class="text-gray-300 mb-2 text-4xl">📭</div>
+            <p class="text-gray-500 font-medium">Nenhuma mensagem encontrada.</p>
+            <p class="text-xs text-gray-400 mt-1">Verifique se o filtro "Mostrar Lidas" está ativo.</p>
+        </div>
+        } @else {
+        <table class="w-full text-left">
+            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold">
+            <tr>
+                <th class="p-4 w-10"></th> <th class="p-4">De</th>
+                <th class="p-4">Assunto / Mensagem</th>
+                <th class="p-4">Data</th>
+                <th class="p-4 text-right">Ações</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+            @for (msg of visibleContacts(); track msg.id) {
+            <tr class="transition-colors hover:bg-gray-50" [class.font-bold]="!msg.isRead">
+
+                <td class="p-4 text-center">
+                    @if(!msg.isRead) {
+                    <span class="inline-block w-2 h-2 rounded-full bg-[var(--lumiere-gold)]" title="Nova"></span>
+                    }
+                </td>
+
+                <td class="p-4">
+                    <div class="text-gray-800">{{ msg.name }}</div>
+                    <div class="text-xs text-gray-400 font-normal">{{ msg.email }}</div>
+                </td>
+
+                <td class="p-4 max-w-md">
+                    <div class="truncate text-gray-600">
+                        {{ msg.message }}
+                    </div>
+                </td>
+
+                <td class="p-4 text-xs text-gray-500 font-normal whitespace-nowrap">
+                    {{ msg.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                </td>
+                <td class="p-4 text-right space-x-2" (click)="$event.stopPropagation()">
+                    <button (click)="openMessage(msg); $event.stopPropagation()"
+                            class="text-gray-400 hover:text-[var(--lumiere-bordeaux)] p-1 transition-colors cursor-pointer"
+                            title="Ler Mensagem">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </td>
+            </tr>
+            }
+            </tbody>
+        </table>
+        }
+    </div>
+
+    @if (isModalOpen() && selectedMessage()) {
+        <app-contact-form [contact]="selectedMessage()!" (close)="closeModal()"></app-contact-form>
+    }
+
+</div>

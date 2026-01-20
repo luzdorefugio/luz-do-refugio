@@ -1,7 +1,7 @@
 export interface OrderItem {
-    productId: string; // Removi o '?' porque um item de encomenda tem sempre ID
+    productId: string;
     productName: string;
-    sku?: string;      // SKU pode ser opcional dependendo se tens ou não
+    sku?: string;
     quantity: number;
     price: number;
 }

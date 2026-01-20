@@ -69,6 +69,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
             <div class="md:col-span-2 space-y-6">
+
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="p-4 bg-gray-50 border-b border-gray-100">
                         <h2 class="font-semibold text-[#5c0a0a]">Itens da Encomenda</h2>
@@ -99,7 +100,7 @@
                             </span>
                         </div>
                         @if (o.discountAmount && o.discountAmount > 0) {
-                            <div class="flex justify-between items-center text-green-700">
+                        <div class="flex justify-between items-center text-green-700">
                                     <span class="text-sm flex items-center gap-2">
                                         Desconto
                                         @if (o.appliedPromotionCode) {
@@ -108,8 +109,8 @@
                                             </span>
                                         }
                                     </span>
-                                <span class="text-sm font-bold">-€{{ o.discountAmount }}</span>
-                            </div>
+                            <span class="text-sm font-bold">-€{{ o.discountAmount }}</span>
+                        </div>
                         }
                     </div>
 
@@ -118,48 +119,114 @@
                         <span class="text-xl font-bold text-[#5c0a0a]">€{{ o.totalAmount }}</span>
                     </div>
                 </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-sm font-bold text-[#5c0a0a] uppercase tracking-wide mb-4 border-b border-gray-100 pb-2">
+                        Pagamento
+                    </h3>
+
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-gray-50 border border-gray-100 text-[#5c0a0a]">
+                            @if (o.paymentMethod === 'MBWAY') {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                            } @else if (o.paymentMethod === 'TRANSFER') {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                            } @else {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                            }
+                        </div>
+
+                        <div>
+                            <p class="text-xs text-gray-400 font-medium uppercase">Método Escolhido</p>
+                            <p class="font-bold text-gray-800">
+                                @if(o.paymentMethod === 'MBWAY') { MB WAY }
+                                @else if(o.paymentMethod === 'TRANSFER') { Transferência Bancária }
+                                @else { {{ o.paymentMethod }} }
+                            </p>
+                        </div>
+                    </div>
+
+                    @if (o.status === 'PENDING') {
+
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+
+                        @if (o.paymentMethod === 'MBWAY') {
+                        <p class="text-xs text-gray-500 mb-1">Enviar para:</p>
+                        <p class="text-2xl font-mono font-bold text-[#5c0a0a]">935 470 654</p>
+                        }
+
+                        @else if (o.paymentMethod === 'TRANSFER') {
+                        <div class="text-left space-y-3">
+                            <div>
+                                <p class="text-xs text-gray-500 mb-1">Dados para transferência:</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-base font-mono font-bold text-gray-800 break-all select-all">
+                                        PT50 0045 8727 4040 6857 4933 4
+                                    </p>
+                                    <button (click)="copyToClipboard('PT50 0045 8727 4040 6857 4933 4')"
+                                            class="p-1.5 rounded-md text-gray-400 hover:text-[var(--lumiere-bordeaux)] hover:bg-white transition-all active:scale-95"
+                                            [title]="showCopySuccess() ? 'Copiado!' : 'Copiar IBAN'">
+
+                                        @if (showCopySuccess()) {
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600 animate-[scaleIn_0.2s_ease-out]">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                        } @else {
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                            </svg>
+                                        }
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Titular:</p>
+                                <p class="text-sm font-semibold text-gray-800">João Paulo Simões Filipe</p>
+                            </div>
+                        </div>
+                        }
+                    </div>
+
+                    <div class="bg-yellow-50 text-yellow-800 text-xs p-3 rounded-md border border-yellow-100 flex gap-2 items-start">
+                        <span class="text-base">⚠️</span>
+                        <span>
+                                <strong>Aguardamos pagamento.</strong><br>
+                                A sua encomenda será processada assim que confirmarmos a receção.
+                            </span>
+                    </div>
+
+                    } @else {
+                    <div class="bg-green-50 text-green-800 text-xs p-3 rounded-md border border-green-100 flex items-center gap-2 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Pagamento Recebido e Confirmado.
+                    </div>
+                    }
+                </div>
             </div>
 
             <div class="space-y-6">
-
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-6">
                     <h3 class="text-sm font-bold text-[#5c0a0a] uppercase tracking-wide mb-4 border-b pb-2">Destino</h3>
 
                     <div class="flex items-start gap-3">
                         <span class="text-2xl">📍</span>
                         <div>
                             <p class="text-sm text-gray-600 font-medium">Encomenda para:</p>
-                            <p class="text-gray-800 font-bold">{{ o.customerName }}</p>
-                            <p class="text-sm text-gray-500 mt-1">{{ o.zipCode }} {{ o.city }}</p>
+                            <p class="text-gray-800 font-bold text-lg">{{ o.customerName }}</p>
+                            <p class="text-sm text-gray-500 mt-1 leading-relaxed">
+                                {{ o.zipCode }} {{ o.city }}
+                            </p>
                         </div>
                     </div>
                 </div>
-
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 class="text-sm font-bold text-[#5c0a0a] uppercase tracking-wide mb-4 border-b pb-2">Pagamento</h3>
-
-                    <p class="text-sm mb-2">Método: <span class="font-semibold">{{ o.paymentMethod }}</span></p>
-
-                    @if (o.status === 'PENDING') {
-                    <div class="bg-yellow-50 text-yellow-800 text-xs p-3 rounded-md mt-2 border border-yellow-100">
-                        ⚠️ Aguardamos confirmação do pagamento.
-                        <br>Se já pagou, o estado atualizará em breve.
-                    </div>
-                    } @else {
-                    <div class="bg-green-50 text-green-800 text-xs p-3 rounded-md mt-2 border border-green-100 flex items-center gap-2">
-                        ✓ Pagamento Confirmado
-                    </div>
-                    }
-                </div>
-
             </div>
-        </div>
 
-        <div class="mt-10 text-center">
-            <a routerLink="/shop" class="text-[#5c0a0a] border-b border-[#5c0a0a] hover:text-[#d4af37] hover:border-[#d4af37] transition pb-1">
-                ← Voltar à Loja
-            </a>
-        </div>
+        </div> <div class="mt-10 text-center">
+        <a routerLink="/shop" class="text-[#5c0a0a] border-b border-[#5c0a0a] hover:text-[#d4af37] hover:border-[#d4af37] transition pb-1">
+            ← Voltar à Loja
+        </a>
+    </div>
     </div>
     }
 </div>

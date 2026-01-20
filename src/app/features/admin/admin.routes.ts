@@ -10,6 +10,7 @@ import { PromotionsListComponent } from './pages/promotions/promotion-list/promo
 import { ShippingListComponent } from './pages/shipping/shipping-list/shipping-list.component';
 import { ReviewListComponent } from './pages/reviews/review-list/review-list.component';
 import { FinancialListComponent } from './pages/financial/financial-list/financial-list.component';
+import { ContactListComponent } from './pages/contacts/contact-list/contact-list.component';
 import { authGuard } from '../../core/guards/auth.guard';
 
 export const ADMIN_ROUTES: Routes = [
@@ -28,7 +29,8 @@ export const ADMIN_ROUTES: Routes = [
       { path: 'promocoes', component: PromotionsListComponent },
       { path: 'envios', component: ShippingListComponent },
       { path: 'reviews', component: ReviewListComponent },
-      { path: 'finance', component: FinancialListComponent }
+      { path: 'finance', component: FinancialListComponent },
+      { path: 'contactos', component: ContactListComponent }
     ]
   }
 ];

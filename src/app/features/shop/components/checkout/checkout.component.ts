@@ -2,7 +2,6 @@ import { Component, inject, signal, computed, OnInit, DestroyRef } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { Observable, switchMap, of } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // --- IMPORTS ---
@@ -42,8 +41,10 @@ export class CheckoutComponent implements OnInit {
   currentUser = signal<any>(null);
 
   // --- DATA ---
-  shippingMethods = signal<ShippingMethod[]>([]);
+  // "allShippingMethods" guarda tudo o que vem da BD (os 4 métodos)
+  allShippingMethods = signal<ShippingMethod[]>([]);
   selectedShipping = signal<ShippingMethod | null>(null);
+
   couponCode = signal('');
   discountAmount = signal(0);
   couponApplied = signal(false);
@@ -57,14 +58,42 @@ export class CheckoutComponent implements OnInit {
     "Obrigado por seres luz no meu caminho."
   ];
 
-  // --- COMPUTEDS ---
+  // --- COMPUTEDS (A MÁGICA DO PESO) ---
+
+  // 1. Calcula o peso total do carrinho
+  cartTotalWeight = computed(() => {
+    return this.cartService.cartItems().reduce((total, item) => {
+      // Assume 350g se o produto não tiver peso definido na BD
+      const itemWeight = (item as any).weight || 350;
+      return total + (itemWeight * item.quantity);
+    }, 0);
+  });
+
+  // 2. Filtra os métodos disponíveis com base no peso
+  availableMethods = computed(() => {
+    const weight = this.cartTotalWeight();
+
+    // Filtra a lista completa: O peso do carrinho tem de estar entre o Min e o Max do método
+    return this.allShippingMethods().filter(method => {
+       const min = method.minWeightGrams || 0;
+       const max = method.maxWeightGrams || 999999;
+       return weight >= min && weight <= max;
+    }).sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+  });
+
+  // 3. Calcula o custo (Verifica se é oferta ou preço base)
   currentShippingCost = computed(() => {
     const method = this.selectedShipping();
-    if (!method) return 0;
     const subtotal = this.cartService.subTotal();
-    if (subtotal >= 50 && method.name.toLowerCase().includes('registado')) {
+
+    if (!method) return 0;
+
+    // Se o método tiver um limiar de oferta e nós passarmos esse valor
+    if (method.freeShippingThreshold && subtotal >= method.freeShippingThreshold) {
       return 0;
     }
+
+    // Caso contrário, é o preço direto da BD
     return method.price;
   });
 
@@ -97,7 +126,7 @@ export class CheckoutComponent implements OnInit {
     }),
     gift: this.fb.group({
       isGift: [false],
-      messageText: ['', [Validators.maxLength(250)]],
+      messageText: ['', [Validators.maxLength(150)]],
       messageType: ['custom'],
       fromName: [''],
     }),
@@ -116,18 +145,14 @@ export class CheckoutComponent implements OnInit {
       this.router.navigate(['/loja']);
       return;
     }
-
     const user = this.authService.currentUser();
     if (user) {
       this.currentUser.set(user);
       this.fillFormForPersonalUse(user);
     }
-
     this.setupBillingValidation();
     this.loadShippingMethods();
   }
-
-  // --- LÓGICA DE MODOS ---
 
   setMode(isGift: boolean) {
     this.isGiftMode.set(isGift);
@@ -152,17 +177,13 @@ export class CheckoutComponent implements OnInit {
 
         this.checkoutForm.get('gift.fromName')?.setValue(user.name);
       } else {
-        // Se não tiver user, usamos 'as any' para evitar erro de partial
         billingGroup?.patchValue({ useShippingAddress: false } as any);
       }
 
     } else {
-      // === MODO PESSOAL ===
       if (user) {
         this.fillFormForPersonalUse(user);
       }
-
-      // CORREÇÃO 2: Usar 'as any' para fazer patch apenas do booleano
       billingGroup?.patchValue({
         useShippingAddress: true
       } as any);
@@ -224,20 +245,28 @@ export class CheckoutComponent implements OnInit {
   loadShippingMethods() {
     this.shippingService.getActiveMethods().subscribe({
       next: (methods) => {
-        this.shippingMethods.set(methods);
-        if (methods.length > 0) this.selectShipping(methods[0]);
+        // Guardamos TUDO na lista "all"
+        this.allShippingMethods.set(methods);
+
+        // Selecionamos o primeiro da lista FILTRADA (availableMethods)
+        // Usamos setTimeout para garantir que o computed availableMethods já atualizou
+        setTimeout(() => {
+             const validMethods = this.availableMethods();
+             if (validMethods.length > 0) {
+                 this.selectShipping(validMethods[0]);
+             }
+        }, 0);
       },
       error: () => {
-        this.shippingMethods.set([
-           { id: 'standard', name: 'Envio Standard', description: '3-5 dias', price: 3.50, active: true }
-        ]);
-        this.selectShipping(this.shippingMethods()[0]);
+         // Fallback em caso de erro
+         console.error('Erro ao carregar métodos');
       }
     });
   }
 
   selectShipping(method: ShippingMethod) {
     this.selectedShipping.set(method);
+    // Se mudarmos para um método que agora é grátis, verificamos cupões "Free Shipping"
     if (this.activePromotion()?.discountType === 'FREE_SHIPPING') {
        this.removeCoupon();
        this.errorMessage.set('O envio mudou. Por favor, aplique o cupão novamente.');
@@ -321,24 +350,12 @@ export class CheckoutComponent implements OnInit {
         alert('Selecione um método de envio.');
         return;
     }
-
     this.isLoading.set(true);
-
     const formValues = this.checkoutForm.getRawValue();
     const shippingData = formValues.shipping!;
     let billingData = formValues.billing!;
     const giftData = formValues.gift!;
 
-    // Helper para dividir o nome
-    const splitName = (fullName: string) => {
-        const parts = fullName ? fullName.trim().split(' ') : [];
-        if (parts.length === 0) return { firstName: '', lastName: '' };
-        const firstName = parts[0];
-        const lastName = parts.length > 1 ? parts.slice(1).join(' ') : '';
-        return { firstName, lastName };
-    };
-
-    // MERGE DE MORADA SE "IGUAL"
     if (billingData.useShippingAddress) {
       billingData = {
         ...billingData,
@@ -348,9 +365,6 @@ export class CheckoutComponent implements OnInit {
         zipCode: shippingData.zipCode,
       };
     }
-
-    const shippingNames = splitName(shippingData.fullName || '');
-    const billingNames = splitName(billingData.fullName || '');
 
     const orderPayload = {
       customer: {
@@ -411,8 +425,8 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  isFieldInvalid(path: string): boolean {
-    const field = this.checkoutForm.get(path);
-    return !!(field?.invalid && (field?.touched || field?.dirty));
-  }
+    isFieldInvalid(path: string): boolean {
+        const field = this.checkoutForm.get(path);
+        return !!(field?.invalid && (field?.touched || field?.dirty));
+    }
 }

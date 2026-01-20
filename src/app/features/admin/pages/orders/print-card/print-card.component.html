@@ -85,33 +85,31 @@
 
             <div class="w-1/2 cover-bg h-full flex flex-col items-center justify-center p-4 relative">
 
-                <img src="assets/images/LOGO-2.png" class="w-20 opacity-90 mix-blend-multiply mb-3" alt="Logo">
+                <img src="LOGO-2.png" class="w-20 opacity-90 mix-blend-multiply mb-3" alt="Logo">
 
                 @if (card.isGift) {
-                <div class="border border-[var(--lumiere-gold)] p-4 w-full text-center bg-white/50 backdrop-blur-sm rounded-sm mt-2">
-                    <div class="mb-2">
-                        <span class="text-[8px] uppercase tracking-[0.2em] text-gray-400 block mb-0.5">De</span>
-                        <span class="font-handwriting text-xl text-[var(--lumiere-bordeaux)] block leading-none">
-                                        {{ card.giftFrom || 'Alguém especial' }}
-                                    </span>
+                    <div class="border border-[var(--lumiere-gold)] p-4 w-full text-center bg-white/50 backdrop-blur-sm rounded-sm mt-2">
+                        <div class="mb-2">
+                            <span class="text-[8px] uppercase tracking-[0.2em] text-gray-400 block mb-0.5">De</span>
+                            <span class="font-handwriting text-xl text-[var(--lumiere-bordeaux)] block leading-none">
+                                {{ card.giftFrom || 'Alguém especial' }}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="text-[8px] uppercase tracking-[0.2em] text-gray-400 block mb-0.5">Para</span>
+                            <span class="font-handwriting text-xl text-[var(--lumiere-bordeaux)] block font-bold leading-none">
+                                {{ card.giftTo }}
+                            </span>
+                        </div>
                     </div>
-                    <div>
-                        <span class="text-[8px] uppercase tracking-[0.2em] text-gray-400 block mb-0.5">Para</span>
-                        <span class="font-handwriting text-xl text-[var(--lumiere-bordeaux)] block font-bold leading-none">
-                                        {{ card.giftTo }}
-                                    </span>
-                    </div>
-                </div>
                 } @else {
-                <h3 class="font-serif-title text-[var(--lumiere-bordeaux)] text-lg mt-1">Luz do Refúgio</h3>
-                <p class="text-[10px] text-gray-600 mt-1 italic">Traga a paz do oceano.</p>
+                    <h3 class="font-serif-title text-[var(--lumiere-bordeaux)] text-lg mt-1">Luz do Refúgio</h3>
+                    <p class="text-[10px] text-gray-600 mt-1 italic">Traga a paz do oceano.</p>
                 }
-
                 <div class="absolute bottom-4 text-center w-full">
                     <p class="text-[8px] text-gray-600 tracking-wider">PRODUZIDO EM PORTUGAL</p>
                 </div>
             </div>
-
         </div>
     </div>
     }

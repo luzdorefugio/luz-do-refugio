@@ -30,12 +30,12 @@ export class OrderService {
         return this.http.get<Order[]>(`${this.apiShopUrl}?customerEmail=${email}`);
     }
 
-    getOrderById(orderId: string): Observable<Order> {
-        return this.http.get<Order>(`${this.apiShopUrl}/${orderId}`);
+    getOrderByIdAdmin(orderId: string): Observable<Order> {
+        return this.http.get<Order>(`${this.apiAdminUrl}/${orderId}`);
     }
 
-    getOrderByIdSimple(orderId: string): Observable<Order> {
-        return this.http.get<Order>(`${this.apiShopUrl}/simple/${orderId}`);
+    getOrderByIdShop(orderId: string): Observable<Order> {
+        return this.http.get<Order>(`${this.apiShopUrl}/${orderId}`);
     }
 
     getPendingCount(): Observable<number> {

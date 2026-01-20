@@ -1,0 +1,61 @@
+<div class="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm flex justify-center items-center p-4 animate-[fadeIn_0.2s]">
+
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden animate-[scaleIn_0.2s] flex flex-col max-h-[90vh]">
+
+        <div class="bg-[var(--lumiere-cream)] p-6 border-b border-gray-100 flex justify-between items-start">
+            <div>
+                <h2 class="font-serif-title font-bold text-xl text-[var(--lumiere-bordeaux)]">
+                    {{ contact.name }}
+                </h2>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-sm text-gray-500">{{ contact.email }}</span>
+                    @if(contact.isRead) {
+                    <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-green-200">LIDA</span>
+                    } @else {
+                    <span class="bg-[var(--lumiere-gold)] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">NOVA</span>
+                    }
+                </div>
+            </div>
+            <button (click)="onClose()" class="text-gray-400 hover:text-black p-1">✕</button>
+        </div>
+
+        <div class="p-8 overflow-y-auto flex-1">
+            <div class="mb-6">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">Mensagem</span>
+                <div class="text-gray-700 leading-relaxed whitespace-pre-line text-base font-serif bg-gray-50 p-4 rounded-lg border border-gray-100">
+                    {{ contact.message }}
+                </div>
+            </div>
+
+            <div class="text-right">
+                <p class="text-xs text-gray-400">
+                    Recebida a {{ contact.createdAt | date:'longDate' }} às {{ contact.createdAt | date:'shortTime' }}
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 p-4 border-t border-gray-100 flex justify-between items-center">
+
+            <a [href]="'mailto:' + contact.email"
+               class="flex items-center gap-2 text-[var(--lumiere-bordeaux)] font-bold text-sm hover:underline px-2 py-2 rounded hover:bg-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                Responder por Email
+            </a>
+
+            <div class="flex gap-3">
+                <button type="button" (click)="onClose()" class="px-4 py-2 border border-gray-300 rounded hover:bg-white text-sm font-medium text-gray-600 transition-colors">
+                    Fechar
+                </button>
+
+                @if(!contact.isRead) {
+                <button (click)="toggleReadStatus()" [disabled]="isLoading"
+                        class="bg-green-600 text-white px-4 py-2 rounded font-bold text-sm hover:bg-green-700 shadow-sm disabled:opacity-50 transition-colors flex items-center gap-2">
+                    @if(isLoading) { <span class="animate-spin">⏳</span> }
+                    <span>Marcar como Lida</span>
+                </button>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>

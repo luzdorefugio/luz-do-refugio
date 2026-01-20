@@ -81,9 +81,9 @@
                                     </div>
 
                                     <div class="flex flex-col">
-                        <span class="font-serif-title font-bold text-gray-800 text-base leading-tight group-hover:text-[var(--lumiere-bordeaux)] transition-colors">
-                            {{ item.name }}
-                        </span>
+                                        <span class="font-serif-title font-bold text-gray-800 text-base leading-tight group-hover:text-[var(--lumiere-bordeaux)] transition-colors">
+                                            {{ item.name }}
+                                        </span>
                                         <span class="text-xs text-gray-400 mt-1">Ref: {{ item.sku }}</span>
                                     </div>
                                 </div>
@@ -106,9 +106,9 @@
                             </td>
 
                             <td class="py-4 px-4 text-right">
-                <span class="font-bold text-[var(--lumiere-bordeaux)] text-lg font-serif-title">
-                    {{ item.price * item.quantity | currency:'EUR' }}
-                </span>
+                                <span class="font-bold text-[var(--lumiere-bordeaux)] text-lg font-serif-title">
+                                    {{ item.price * item.quantity | currency:'EUR' }}
+                                </span>
                             </td>
                         </tr>
                         }
@@ -261,11 +261,11 @@
                                           placeholder="Escreve aqui a tua dedicatória especial..."></textarea>
 
                                 <div class="absolute bottom-2 right-2 text-[10px] text-gray-400 bg-white/80 px-1 rounded">
-                                    {{ checkoutForm.get('gift.messageText')?.value?.length || 0 }} / 250
+                                    {{ checkoutForm.get('gift.messageText')?.value?.length || 0 }} / 150
                                 </div>
 
                                 @if (giftMessageControl?.errors?.['maxlength']) {
-                                <span class="text-xs text-red-500">Máximo de 250 caracteres atingido.</span>
+                                <span class="text-xs text-red-500">Máximo de 150 caracteres atingido.</span>
                                 }
                             </div>
                             }
@@ -438,7 +438,7 @@
                             </h3>
 
                             <div class="space-y-3">
-                                @for (method of shippingMethods(); track method.id) {
+                                @for (method of availableMethods(); track method.id) {
                                 <div (click)="selectShipping(method)"
                                      class="group p-4 border rounded-xl cursor-pointer flex justify-between items-center transition-all duration-200 hover:shadow-md"
                                      [class.border-[var(--lumiere-gold)]]="selectedShipping()?.id === method.id"
@@ -461,11 +461,34 @@
                                     </div>
 
                                     <span class="font-bold text-sm" [class.text-[var(--lumiere-bordeaux)]]="selectedShipping()?.id === method.id">
-                                        {{ method.price === 0 ? 'Grátis' : (method.price | currency:'EUR') }}
+                                        @if (currentShippingCost() === 0 && selectedShipping()?.id === method.id) {
+                                            Grátis
+                                        } @else if (selectedShipping()?.id === method.id) {
+                                            {{ currentShippingCost() | currency:'EUR' }}
+                                        } @else {
+                                            {{ method.price | currency:'EUR' }}
+                                        }
                                     </span>
                                 </div>
                                 }
                             </div>
+
+                            @if (currentShippingCost() > 0 && selectedShipping()?.freeShippingThreshold && (selectedShipping()?.price ?? 0) >= 8.50) {
+                            <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mt-4 flex items-start gap-3 animate-[pulse_3s_infinite]">
+                                <span class="text-2xl">💡</span>
+                                <div>
+                                    <p class="text-sm text-gray-700">
+                                        O peso da encomenda ({{ cartTotalWeight() }}g) colocou os portes a <span class="font-bold text-[#5c0a0a]">{{ currentShippingCost() | currency:'EUR' }}</span>.
+                                    </p>
+                                    <p class="text-sm font-bold text-[#d4af37] mt-1">
+                                        Faltam apenas {{ (selectedShipping()!.freeShippingThreshold! - cartService.subTotal()) | currency:'EUR' }} para teres ENVIO GRÁTIS!
+                                    </p>
+                                    <a routerLink="/loja" class="text-xs underline text-gray-500 hover:text-[#5c0a0a] mt-2 block font-medium">
+                                        Voltar à loja e adicionar mais uma vela ->
+                                    </a>
+                                </div>
+                            </div>
+                            }
                         </div>
 
                         <form [formGroup]="checkoutForm">
@@ -588,7 +611,6 @@
                 </div>
             </div>
             }
-
         </div>
     </div>
 </div>

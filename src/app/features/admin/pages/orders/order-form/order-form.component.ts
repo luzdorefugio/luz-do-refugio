@@ -86,7 +86,7 @@ export class OrderFormComponent implements OnInit {
 
     private fetchOrderDetails(id: string) {
         this.isLoading = true;
-        this.orderService.getOrderById(id).subscribe({
+        this.orderService.getOrderByIdAdmin(id).subscribe({
             next: (fullOrder) => {
                 this.order = fullOrder;
                 this.isLoading = false;
@@ -204,22 +204,14 @@ export class OrderFormComponent implements OnInit {
             this.notify.error('Preencha os campos obrigatórios e adicione produtos.');
             return;
         }
-
         this.isLoading = true;
         const raw = this.createForm.getRawValue();
-
-        // Separa Nome/Apelido (simples split, backend gere o resto)
-        const nameParts = raw.customerName.trim().split(' ');
-        const firstName = nameParts[0];
-        const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
-
-        // Determina morada de faturação
         const billingAddr = raw.hasDifferentBilling ? {
             street: raw.billingAddress,
             city: raw.billingCity,
             zip: raw.billingZipCode,
             country: 'Portugal'
-        } : { // Se for igual, envia a de envio
+        } : {
             street: raw.address,
             city: raw.city,
             zip: raw.zipCode,
@@ -227,10 +219,8 @@ export class OrderFormComponent implements OnInit {
         };
 
         const payload = {
-            // Estrutura aninhada conforme OrderRequest.java
             customer: {
-                firstName: firstName,
-                lastName: lastName, // Backend pode usar customerName ou First/Last
+                fullName: raw.customerName,
                 email: raw.customerEmail,
                 phone: raw.customerPhone,
                 nif: raw.customerNif,
@@ -243,8 +233,6 @@ export class OrderFormComponent implements OnInit {
                 },
                 billingAddress: billingAddr
             },
-
-            // Gift (só envia se isGift for true)
             giftDetails: raw.isGift ? {
                 isGift: true,
                 fromName: raw.giftFromName,
@@ -254,23 +242,18 @@ export class OrderFormComponent implements OnInit {
             } : null,
 
             payment: {
-                method: raw.paymentMethod // Ajustado para 'method'
+                method: raw.paymentMethod
             },
-
-            // Logística
             channel: raw.channel,
             status: raw.status,
             shippingMethod: raw.shippingMethod,
             shippingCost: raw.shippingCost,
-
-            // Items
             items: this.cartItems().map(item => ({
                 productId: item.productId,
                 name: item.productName,
                 price: item.price,
                 quantity: item.quantity
             })),
-
             total: this.totalCreateAmount(),
             withoutBox: raw.withoutBox,
             withoutCard: raw.withoutCard

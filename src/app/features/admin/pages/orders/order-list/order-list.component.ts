@@ -32,7 +32,7 @@ export class OrderListComponent implements OnInit {
             const idToOpen = params['openId'];
 
             if (idToOpen) {
-                this.orderService.getOrderById(idToOpen).subscribe({
+                this.orderService.getOrderByIdAdmin(idToOpen).subscribe({
                     next: (order) => {
                         this.openModal(order); // Reutiliza a função openModal
 

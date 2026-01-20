@@ -6,13 +6,12 @@ import { ShippingMethod } from '../../../../../core/models/shipping.model';
 import { NotificationService } from '../../../../../core/services/notification.service';
 
 @Component({
-  selector: 'app-shipping-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './shipping-form.component.html'
+    selector: 'app-shipping-form',
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './shipping-form.component.html'
 })
 export class ShippingFormComponent implements OnInit {
-
   private fb = inject(FormBuilder);
   private service = inject(ShippingService);
   private noti = inject(NotificationService);
@@ -31,15 +30,18 @@ export class ShippingFormComponent implements OnInit {
   id: string | null = null;
   isLoading = false;
 
-  constructor() {
-    this.form = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
-      price: [0, [Validators.required, Validators.min(0)]],
-      displayOrder: [0, Validators.required],
-      active: [true]
-    });
-  }
+    constructor() {
+        this.form = this.fb.group({
+            name: ['', Validators.required],
+            description: ['', Validators.required],
+            price: [0, [Validators.required, Validators.min(0)]],
+            displayOrder: [0, Validators.required],
+            minWeightGrams: [0],           // Default 0
+            maxWeightGrams: [999999],      // Default "infinito"
+            freeShippingThreshold: [null],
+            active: [true]
+        });
+    }
 
   ngOnInit() {}
 

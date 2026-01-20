@@ -39,6 +39,7 @@
             <div class="space-y-6 animate-[fadeIn_0.3s]">
 
                 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 flex justify-between items-center flex-wrap gap-4">
+
                     <div class="flex items-center gap-3">
                         <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Estado:</span>
                         <div class="relative">
@@ -46,13 +47,13 @@
                                     [value]="order.status"
                                     class="appearance-none pl-4 pr-10 py-2 rounded-full text-xs font-bold border cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 transition-all shadow-sm"
                                     [ngClass]="{
-                                        'bg-yellow-100 text-yellow-800 border-yellow-200': order.status === 'PENDING',
-                                        'bg-green-100 text-green-800 border-green-200': order.status === 'PAID',
-                                        'bg-blue-100 text-blue-800 border-blue-200': order.status === 'SHIPPED',
-                                        'bg-purple-100 text-purple-800 border-purple-200': order.status === 'DELIVERED',
-                                        'bg-red-100 text-red-800 border-red-200': order.status === 'CANCELLED',
-                                        'bg-orange-100 text-orange-800 border-orange-200': order.status === 'RETURNED'
-                                    }">
+                        'bg-yellow-100 text-yellow-800 border-yellow-200': order.status === 'PENDING',
+                        'bg-green-100 text-green-800 border-green-200': order.status === 'PAID',
+                        'bg-blue-100 text-blue-800 border-blue-200': order.status === 'SHIPPED',
+                        'bg-purple-100 text-purple-800 border-purple-200': order.status === 'DELIVERED',
+                        'bg-red-100 text-red-800 border-red-200': order.status === 'CANCELLED',
+                        'bg-orange-100 text-orange-800 border-orange-200': order.status === 'RETURNED'
+                    }">
                                 @for (opt of getAvailableStatusOptions(); track opt.key) {
                                 <option [value]="opt.key">{{ opt.label }}</option>
                                 }
@@ -60,12 +61,30 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3">
-                        @if (order.customerNif) {
+                    <div class="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase">Pagamento:</span>
+
+                        <div class="flex items-center gap-2 font-bold text-sm text-gray-700">
+                            @if (order.paymentMethod === 'MBWAY') {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#5c0a0a]"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                                <span>MB WAY</span>
+                            }
+                            @else if (order.paymentMethod === 'TRANSFER') {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                                <span>Transferência</span>
+                            }
+                            @else {
+                                <span class="text-gray-500">{{ order.paymentMethod }}</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3 ml-auto"> @if (order.customerNif) {
                         <button (click)="toggleInvoice()"
                                 class="text-xs px-3 py-1 rounded-full font-bold border transition-colors flex items-center gap-2"
                                 [class.bg-green-50]="order.invoiceIssued"
-                                [class.text-green-700]="order.invoiceIssued">
+                                [class.text-green-700]="order.invoiceIssued"
+                                title="Alternar estado da fatura">
                             {{ order.invoiceIssued ? '✅ Fatura Emitida' : '⏳ Emitir Fatura' }}
                         </button>
                         }
@@ -162,6 +181,7 @@
                         <table class="w-full text-sm text-left">
                             <thead class="bg-gray-50 text-gray-500 font-bold uppercase text-xs">
                             <tr>
+                                <th class="p-3"></th>
                                 <th class="p-3">Produto</th>
                                 <th class="p-3 text-center">Qtd</th>
                                 <th class="p-3 text-right">Preço</th>
@@ -169,33 +189,43 @@
                             </tr>
                             </thead>
                             <tbody class="divide-y">
-                            @for (item of order.items; track $index) {
-                            <tr class="hover:bg-gray-50">
-                                <td class="p-3 font-medium text-gray-700">{{ item.productName }}</td>
-                                <td class="p-3 text-center text-gray-600">{{ item.quantity }}</td>
-                                <td class="p-3 text-right text-gray-500">{{ item.price | currency:'EUR' }}</td>
-                                <td class="p-3 text-right font-bold text-gray-800">{{ item.price * item.quantity | currency:'EUR' }}</td>
-                            </tr>
-                            }
+                                @for (item of order.items; track $index) {
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="p-3 font-medium text-gray-700">
+                                            <img [src]="'/logo-velas/' + item.sku + '.png'" [alt]="item.productName" class="w-20 h-20 object-cover">
+                                        </td>
+                                        <td class="p-3 font-medium text-gray-700">{{ item.productName }}</td>
+                                        <td class="p-3 text-center text-gray-600">{{ item.quantity }}</td>
+                                        <td class="p-3 text-right text-gray-500">{{ item.price | currency:'EUR' }}</td>
+                                        <td class="p-3 text-right font-bold text-gray-800">{{ item.price * item.quantity | currency:'EUR' }}</td>
+                                    </tr>
+                                }
                             </tbody>
                             <tfoot class="bg-gray-50 border-t-2 border-gray-100 text-sm">
                             <tr>
-                                <td colspan="3" class="p-2 text-right text-gray-500">Subtotal Produtos</td>
+                                <td colspan="4" class="p-2 text-right text-gray-500">Subtotal Produtos</td>
                                 <td class="p-2 text-right text-gray-800">{{ (order.totalAmount - (order.shippingCost || 0) + ((order.discountAmount ?? 0))) | currency:'EUR' }}</td>
                             </tr>
                             <tr>
-                                <td colspan="3" class="p-2 text-right text-gray-500">Envio ({{ order.shippingMethod || 'Standard' }})</td>
-                                <td class="p-2 text-right text-gray-800">{{ order.shippingCost | currency:'EUR' }}</td>
+                                <td colspan="4" class="p-2 text-right text-gray-500">Envio ({{ order.shippingMethod }})</td>
+                                <td class="p-2 text-right text-gray-800">
+                                    @if (order.shippingCost === 0) {
+                                        <span class="text-green-600 font-bold text-xs uppercase bg-green-50 px-2 py-0.5 rounded">
+                                            Grátis
+                                        </span>
+                                    } @else {
+                                        {{ order.shippingCost | currency:'EUR' }}
+                                    }
+                                </td>
                             </tr>
-
                             @if ((order.discountAmount ?? 0) > 0) {
-                            <tr>
-                                <td colspan="3" class="p-2 text-right text-green-600">Desconto ({{ order.appliedPromotionCode }})</td>
-                                <td class="p-2 text-right text-green-600">-{{ order.discountAmount | currency:'EUR' }}</td>
-                            </tr>
+                                <tr>
+                                    <td colspan="4" class="p-2 text-right text-green-600">Desconto ({{ order.appliedPromotionCode }})</td>
+                                    <td class="p-2 text-right text-green-600">-{{ order.discountAmount | currency:'EUR' }}</td>
+                                </tr>
                             }
                             <tr class="text-base">
-                                <td colspan="3" class="p-4 text-right font-bold text-gray-600 uppercase text-xs tracking-wider">Total Final</td>
+                                <td colspan="4" class="p-4 text-right font-bold text-gray-600 uppercase text-xs tracking-wider">Total Final</td>
                                 <td class="p-4 text-right font-serif-title font-bold text-xl text-[var(--lumiere-bordeaux)]">
                                     {{ order.totalAmount | currency:'EUR' }}
                                 </td>
@@ -208,12 +238,9 @@
 
             } @else {
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full animate-[fadeIn_0.3s]" [formGroup]="createForm">
-
                 <div class="space-y-6 overflow-y-auto pr-2 max-h-[70vh] custom-scrollbar">
-
                     <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm space-y-4">
                         <h3 class="font-bold text-gray-800 border-b pb-2 text-sm uppercase tracking-wider">Dados de Envio</h3>
-
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="label-lumiere text-xs font-bold text-gray-500 mb-1 block">Nome (Destinatário) *</label>
@@ -224,12 +251,10 @@
                                 <input formControlName="customerPhone" type="text" class="input-lumiere w-full border-gray-300 rounded-md">
                             </div>
                         </div>
-
                         <div>
                             <label class="label-lumiere text-xs font-bold text-gray-500 mb-1 block">Email (Para notificações) *</label>
                             <input formControlName="customerEmail" type="email" class="input-lumiere w-full border-gray-300 rounded-md">
                         </div>
-
                         <div>
                             <label class="label-lumiere text-xs font-bold text-gray-500 mb-1 block">Morada Completa *</label>
                             <input formControlName="address" type="text" placeholder="Rua, Nº, Andar" class="input-lumiere w-full border-gray-300 rounded-md">

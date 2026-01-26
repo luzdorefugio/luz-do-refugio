@@ -1,27 +1,13 @@
-import { Component, inject, signal, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { CartService } from '../../../../core/services/cart.service';
-import { AuthService } from '../../../../core/services/auth.service';
+import { Component, inject, signal } from '@angular/core';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { CartDrawerComponent } from '../../components/cart-drawer/cart-drawer.component';
+import { FooterComponent } from '../../../shared/components/footer/footer.component';
+import { HeaderComponent } from '../../../shared/components/header/header.component';
 
 @Component({
-  selector: 'app-shop-layout',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, CartDrawerComponent],
-  templateUrl: './shop-layout.component.html'
+    selector: 'app-shop-layout',
+    imports: [RouterOutlet, CartDrawerComponent, HeaderComponent, FooterComponent],
+    templateUrl: './shop-layout.component.html'
 })
 export class ShopLayoutComponent {
-    cart = inject(CartService);
-    authService = inject(AuthService);
-    isMobileMenuOpen = signal(false);
-
-    toggleMobileMenu() {
-        this.isMobileMenuOpen.update(v => !v);
-    }
-
-    // Fecha o menu quando clica num link
-    closeMobileMenu() {
-    this.isMobileMenuOpen.set(false);
-    }
 }

@@ -1,0 +1,59 @@
+// Estilos para o conteúdo injetado via [innerHTML]
+.blog-content {
+  ::ng-deep {
+    p {
+      margin-bottom: 1.5em;
+    }
+
+    h2,h3 {
+      font-family: theme('fontFamily.serif-title'); // Usa a tua fonte serif
+      color: #2a1a1a; // Cor escura
+      font-size: 1.75rem;
+      font-weight: bold;
+      margin-bottom: 1em;
+      position: relative;
+      display: inline-block;
+
+      // Pequeno sublinhado dourado nos títulos
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 40px;
+        height: 2px;
+        background-color: #d4af37;
+      }
+    }
+
+    strong {
+      color: #2a1a1a;
+      font-weight: bold;
+    }
+
+    a {
+      color: #d4af37;
+      font-weight: bold;
+      text-decoration: underline;
+      text-decoration-color: rgba(212, 175, 55, 0.3);
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: #2a1a1a;
+        text-decoration-color: #2a1a1a;
+      }
+    }
+
+    ul, ol {
+        margin-bottom: 1.5em;
+        padding-left: 1.5em;
+    }
+
+    li {
+        margin-bottom: 0.5em;
+        &::marker {
+            color: #d4af37; // Marcadores de lista dourados
+        }
+    }
+  }
+}

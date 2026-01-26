@@ -1,0 +1,24 @@
+[
+    {
+        "slug": "arte-de-acender-uma-vela",
+        "title": "A arte de acender uma vela: Rituais para o teu refúgio",
+        "summary": "Mais do que luz, uma vela é um momento. Descobre como criar um ritual de relaxamento e tirar o máximo partido da tua primeira queima.",
+        "content": "<p>Acender uma vela parece simples, não é? Mas existe uma diferença entre apenas 'pôr fogo ao pavio' e criar um verdadeiro momento de refúgio.</p><h3>A Primeira Queima é Sagrada</h3><p>Quando acendes uma vela da Luz do Refúgio pela primeira vez, é crucial deixá-la queimar até que toda a superfície superior esteja líquida. Isto evita o 'efeito túnel' e garante que a tua vela dura muito mais tempo.</p><h3>O Pavio Importa</h3><p>Antes de cada nova utilização, apara o pavio para cerca de 5mm. Um pavio curto dá uma chama mais limpa, sem fumo negro, e mantém o aroma puro.</p>",
+        "image": "blog/images/ritual-vela.webp",
+        "date": "2026-02-02",
+        "author": "Laura da Luz do Refúgio",
+        "minReaderTime": 5,
+        "active": false
+    },
+    {
+        "slug": "beneficios-cera-soja",
+        "title": "Porquê Cera de Soja? Uma escolha consciente",
+        "summary": "Descobre porque escolhemos a cera de soja para as nossas velas e como isso beneficia a tua saúde e o ambiente.",
+        "content": "<p>Na Luz do Refúgio, a escolha dos materiais não é ao acaso. Optámos pela cera de soja 100% vegetal por um motivo simples: queremos o melhor para o teu ar. Esta decisão não foi tomada sem reflexão; consideramos cuidadosamente as propriedades únicas e os benefícios ambientais que a cera de soja oferece em comparação com outras opções, como a parafina.</p><p>A cera de soja é uma escolha sustentável. É extraída da soja, um produto vegetal que tem um impacto ambiental menor do que o petróleo (da qual a parafina é derivada). A produção de ceras de soja promove a agricultura de pequena escala e suporta os agricultores.</p><p>Além disso, a cera de soja é notável por sua pureza. Nossas velas são feitas com uma cera 100% pura, sem aditivos químicos ou parabenos que poderiam desequilibrar o equilíbrio do ar em tua casa. Ao escolher a cera de soja para as nossas velas, garantimos um ambiente mais saudável e acolhedor.</p><p>Aparência e cheiro também são fatores importantes na escolha da cera de soja. As velas feitas com esta cera têm uma cor natural e um aroma suave que não irrita os olhos ou nariz, proporcionando uma experiência sensorial mais agradável. O brilho natural da cera de soja também dá às nossas velas um aspecto elegante e refinado.</p><h2>Queima Limpa: O que diz a Ciência?</h2><p>Ao contrário da parafina, que é um subproduto do refinamento do petróleo, a cera de soja é de origem puramente vegetal. Um estudo conduzido pela <strong>Universidade do Estado da Carolina do Sul</strong> alertou que as velas de parafina podem libertar \"químicos indesejados\" como alcenos e cetonas, e até vestígios de compostos como o tolueno.</p><p>Na Luz do Refúgio, optamos pela soja para garantir que o que respiras é seguro. A nossa queima é livre daquela fuligem preta (carbono de petróleo) que mancha paredes e irrita as vias respiratórias. É a escolha recomendada para manter a qualidade do ar interior da tua casa. <a href=\"https://portal.nifa.usda.gov/web/crisprojectpages/0206030-soybean-candles-for-healthy-life-and-well-being.html\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-[#d4af37] hover:text-[#2a1a1a] font-medium underline decoration-1 underline-offset-2 transition-colors duration-300\">Consulta o resumo do estudo oficial (USDA).</a></p><h3>Dura Mais: A Química a teu Favor</h3><p>Não é magia, é termodinâmica. A cera de soja possui uma estrutura molecular que lhe confere um ponto de fusão mais baixo do que a parafina tradicional. Isto significa que a vela não precisa de ficar \"a ferver\" para libertar o aroma.</p><p>O resultado prático? Uma vela que queima mais devagar e de forma mais uniforme. Testes comparativos indicam que as velas de soja podem durar <strong>30% a 50% mais tempo</strong>, tornando-se um investimento mais inteligente a longo prazo. <a href=\"https://www.harlemcandleco.com/blogs/journal/the-difference-between-soy-wax-and-paraffin-wax-candles\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-[#d4af37] hover:text-[#2a1a1a] font-medium underline decoration-1 underline-offset-2 transition-colors duration-300\">Vê a comparação detalhada entre Soja e Parafina (Harlem Candle Co.).</a></p>",
+        "image": "blog/images/cera-soja.webp",
+        "date": "2026-01-26",
+        "author": "Equipa da Luz do Refúgio",
+        "minReaderTime": 5,
+        "active": true
+    }
+]

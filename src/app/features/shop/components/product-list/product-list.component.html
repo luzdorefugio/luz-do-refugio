@@ -15,7 +15,7 @@
             </div>
             <div class="md:w-1/2 flex justify-center" data-aos="fade-left">
                 <div class="w-80 bg-[#d4af37] rounded-[77px] opacity-20 blur-xl absolute"></div>
-                <img src="LOGO-3.png" alt="Logo da Luz do refugio"
+                <img src="LOGO-3.webp" alt="Logo da Luz do refugio"
                      class="relative rounded-[77px] w-80 object-cover shadow-2xl border-4 border-[#f9f5f0]">
             </div>
         </div>
@@ -43,7 +43,7 @@
                         <div class="w-full md:w-5/12 h-64 md:h-auto relative overflow-hidden pl-0 md:pl-6 pb-6 md:pb-6">
                             <div class="w-full h-full relative rounded-lg overflow-hidden shadow-sm">
                                 <img class="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700"
-                                     [src]="'shop/' + p.sku + '_0.jpg'"
+                                     [src]="'shop/' + p.sku + '_0.webp'"
                                      [alt]="p.name"
                                      [class.grayscale]="p.stock === 0">
                                 <div class="absolute top-2 left-2 bg-rose-600 text-white text-[10px] font-bold px-2 py-1 uppercase tracking-widest rounded-sm z-10">
@@ -117,14 +117,10 @@
         }
     </div>
 </section>
-
-
 <section class="py-16 bg-white overflow-hidden relative border-t border-gray-100">
-
     <div class="text-center mb-10" data-aos="fade-up">
         <h3 class="font-serif-title text-2xl text-[#5c0a0a]">O que dizem os nossos clientes ❤️</h3>
     </div>
-
     @if (isReviewsLoading()) {
     <div class="flex justify-center gap-6 overflow-hidden px-4 opacity-50">
         @for (item of [1,2,3]; track $index) {
@@ -139,24 +135,20 @@
         }
     </div>
     }
-
     @else {
     <div class="marquee-container relative flex overflow-x-hidden group">
 
         <div class="marquee-content flex gap-6 animate-scroll whitespace-nowrap py-4 px-4 hover:pause">
             @for (review of reviews(); track $index) {
             <div class="w-[300px] md:w-[350px] bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex-shrink-0 whitespace-normal hover:shadow-md transition-shadow cursor-default">
-
                 <div class="flex text-[#d4af37] mb-3 text-sm">
                     @for (star of [1,2,3,4,5]; track star) {
                     @if (star <= review.rating) { ★ } @else { ☆ }
                     }
                 </div>
-
                 <p class="text-gray-600 italic text-sm mb-4 leading-relaxed">
                     "{{ review.content }}"
                 </p>
-
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-[#5c0a0a]/10 flex items-center justify-center text-[#5c0a0a] font-bold text-xs">
                         {{ review.authorName.charAt(0) }}
@@ -180,24 +172,21 @@
     </div>
     }
 </section>
-
 <section id="about" class="py-20 bg-[#f9f5f0]">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:flex items-center">
-
         <div class="md:w-1/2 mb-8 md:mb-0" data-aos="fade-right">
-            <img src="https://images.unsplash.com/photo-1603006905003-be475563bc59?q=80&w=600&auto=format&fit=crop"
-                 alt="Decoração de interiores iluminada por vela de soja artesanal feita por Luz do Refúgio num ambiente acolhedor e relaxante"
+            <img src="homeHistory.webp"
+                 alt="Primeira banca da Luz do refúgio"
                  class="rounded-lg shadow-xl hover:scale-[1.02] transition-transform duration-500">
         </div>
-
         <div class="md:w-1/2 md:pl-16" data-aos="fade-left">
             <h2 class="text-3xl font-bold title-font text-[#5c0a0a] mb-4">
                 A Nossa <span class="text-[#7c5e10]">História</span>
             </h2>
 
             <p class="text-[#5c0a0a] mb-6 leading-relaxed">
-                Fundada em Portugal, a Luz do Refúgio nasceu da paixão por criar momentos de paz no meio do caos diário.
-                Cada vela é derramada à mão, uma a uma, usando apenas cera de soja 100% natural e pavios de algodão.
+                Fundada em Portugal, na bela vila da Foz do Arelho a Luz do Refúgio nasceu da paixão por criar momentos de paz no meio do caos diário.
+                Cada vela é derramada à mão, uma a uma, usando apenas cera de soja e coco 100% natural e pavios de algodão.
             </p>
 
             <a routerLink="/loja/sobre"

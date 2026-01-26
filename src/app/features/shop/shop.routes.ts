@@ -11,6 +11,7 @@ import { ShopSuccessComponent } from './components/shop-success/shop-success.com
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { ShippingComponent } from './components/shipping/shipping.component';
 import { TermsComponent } from './components/terms/terms.component';
+import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
 import { authGuard } from '../../core/guards/auth.guard';
 
 export const SHOP_ROUTES: Routes = [
@@ -28,6 +29,7 @@ export const SHOP_ROUTES: Routes = [
       { path: 'rastreio/:id', component: OrderTrackingComponent },
       { path: 'envios-devolucoes', component: ShippingComponent },
       { path: 'termos-condicoes', component: TermsComponent },
+      { path: 'politica-privacidade', component: PrivacyPolicyComponent },
       { path: 'minha-conta', component: ShopAccountComponent, canActivate: [authGuard] }
     ]
   }

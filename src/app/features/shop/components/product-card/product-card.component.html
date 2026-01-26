@@ -2,7 +2,7 @@
      [class.opacity-90]="product.stock === 0">
     <div class="relative overflow-hidden h-64 group cursor-pointer" [routerLink]="['/loja/produto', product.id]">
 
-    <img [src]="'shop/' + product.sku + '_0.jpg'"
+    <img [src]="'shop/' + product.sku + '_0.webp'"
          [alt]="product.name"
          class="w-full h-full object-cover transition duration-500 group-hover:scale-110"
          [class.grayscale]="product.stock === 0">
@@ -15,7 +15,7 @@
     </div>
     }
 
-    <div class="absolute inset-0 bg-[#5c0a0a] bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 z-10">
+    <div class="absolute inset-0 bg-[#5c0a0a] bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-77 transition duration-300 z-10">
         <button class="bg-[#d4af37] text-[#5c0a0a] font-semibold py-2 px-6 rounded-md shadow-lg transform hover:scale-105 transition">
             Ver Detalhes
         </button>

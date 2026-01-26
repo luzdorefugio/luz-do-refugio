@@ -10,5 +10,6 @@ export interface ShopProduct {
     topNote: string;
     heartNote: string;
     baseNote: string;
+    weightGrams: number;
     featured: boolean;
 }

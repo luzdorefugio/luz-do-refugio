@@ -49,9 +49,16 @@ export class ProductDetailComponent implements OnInit {
     productImages = computed(() => {
         const p = this.product();
         if (!p) return [];
+        if (p.name.startsWith('Pack')) {
+            return [
+                `shop/${p.sku}_0.webp`,
+                `shop/${p.sku}_1.webp`
+            ];
+        }
         return [
-            `shop/${p.sku}_1.jpg`,
-            `shop/${p.sku}_2.jpg`
+            `shop/${p.sku}_0.webp`,
+            `shop/${p.sku}_1.webp`,
+            `shop/${p.sku}_2.webp`
         ];
     });
 
@@ -63,12 +70,9 @@ export class ProductDetailComponent implements OnInit {
                 next: (data) => {
                     this.product.set(data);
                     this.titleService.setTitle(`${data.name} | Luz do Refúgio`);
-
                     this.metaService.updateTag({ name: 'description', content: `Descubra a vela ${data.name}. ${data.description}` });
-
-                    // Tentar atualizar a imagem de partilha (Funciona no Facebook, no WhatsApp é mais difícil em SPAs sem SSR)
                     this.metaService.updateTag({ property: 'og:title', content: data.name });
-                    this.metaService.updateTag({ property: 'og:image', content: 'https://www.luzdorefugio.pt/assets/' + this.productImages()[0] });
+                    this.metaService.updateTag({ property: 'og:image', content: 'https://luzdorefugio.pt/' + this.productImages()[0] });
                     this.isLoading.set(false);
                 },
                 error: (err) => {

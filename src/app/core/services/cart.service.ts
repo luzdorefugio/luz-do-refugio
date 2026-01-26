@@ -35,6 +35,7 @@ export class CartService {
                 name: product.name,
                 sku: product.sku,
                 stock: product.stock,
+                weightGrams: product.weightGrams,
                 price: product.salePrice || product.price,
                 quantity: quantity
             }]);

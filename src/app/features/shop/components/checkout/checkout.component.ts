@@ -21,8 +21,6 @@ import { ShippingService } from '../../../../core/services/shipping.service';
   styleUrls: ['./checkout.component.scss']
 })
 export class CheckoutComponent implements OnInit {
-
-  // --- INJEÇÃO ---
   cartService = inject(CartService);
   authService = inject(AuthService);
   private orderService = inject(OrderService);
@@ -31,20 +29,14 @@ export class CheckoutComponent implements OnInit {
   private promotionService = inject(PromotionService);
   private shippingService = inject(ShippingService);
   private destroyRef = inject(DestroyRef);
-
-  // --- STATE ---
   currentStep = signal(1);
   isLoading = signal(false);
   isLoadingCoupon = signal(false);
   errorMessage = signal('');
   isGiftMode = signal(false);
   currentUser = signal<any>(null);
-
-  // --- DATA ---
-  // "allShippingMethods" guarda tudo o que vem da BD (os 4 métodos)
   allShippingMethods = signal<ShippingMethod[]>([]);
   selectedShipping = signal<ShippingMethod | null>(null);
-
   couponCode = signal('');
   discountAmount = signal(0);
   couponApplied = signal(false);
@@ -58,22 +50,15 @@ export class CheckoutComponent implements OnInit {
     "Obrigado por seres luz no meu caminho."
   ];
 
-  // --- COMPUTEDS (A MÁGICA DO PESO) ---
-
-  // 1. Calcula o peso total do carrinho
   cartTotalWeight = computed(() => {
     return this.cartService.cartItems().reduce((total, item) => {
-      // Assume 350g se o produto não tiver peso definido na BD
-      const itemWeight = (item as any).weight || 350;
+      const itemWeight = (item as any).weightGrams || 350;
       return total + (itemWeight * item.quantity);
     }, 0);
   });
 
-  // 2. Filtra os métodos disponíveis com base no peso
   availableMethods = computed(() => {
     const weight = this.cartTotalWeight();
-
-    // Filtra a lista completa: O peso do carrinho tem de estar entre o Min e o Max do método
     return this.allShippingMethods().filter(method => {
        const min = method.minWeightGrams || 0;
        const max = method.maxWeightGrams || 999999;

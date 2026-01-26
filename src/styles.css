@@ -112,6 +112,15 @@ textarea.input-lumiere {
     resize: vertical;
     min-height: 80px;
 }
+.blog-content p {
+    margin-bottom: 1.5rem; /* Espaço entre parágrafos */
+}
+.blog-content h2, .blog-content h3 {
+    margin-bottom: 1rem;   /* Espaço depois dos títulos */
+    color: #2a1a1a;        /* Garante que os títulos são escuros */
+    font-weight: bold;
+}
+
 /* =========================================================
    REGRAS GLOBAIS DE IMPRESSÃO
    ========================================================= */

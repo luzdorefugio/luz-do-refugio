@@ -16,7 +16,6 @@ export const routes: Routes = [
         loadChildren: () => import('./features/shop/shop.routes').then(m => m.SHOP_ROUTES)
     },
     {
-        canActivate: [maintenanceGuard],
         path: 'blog',
         loadChildren: () => import('./features/blog/blog.routes').then(m => m.BLOG_ROUTES)
     },

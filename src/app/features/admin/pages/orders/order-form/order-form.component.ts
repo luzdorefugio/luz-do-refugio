@@ -102,15 +102,15 @@ export class OrderFormComponent implements OnInit {
     private initForms() {
         this.createForm = this.fb.group({
             // --- Dados Pessoais & Envio ---
-            customerName: ['', Validators.required],
-            customerEmail: ['', [Validators.required, Validators.email]],
-            customerPhone: ['', Validators.required],
+            customerName: [''],
+            customerEmail: [''],
+            customerPhone: [''],
             customerNif: [''],
 
             // Morada de Envio
-            address: ['', Validators.required],
-            city: ['', Validators.required],
-            zipCode: ['', Validators.required],
+            address: [''],
+            city: [''],
+            zipCode: [''],
 
             // --- Faturação Diferente ---
             hasDifferentBilling: [false],

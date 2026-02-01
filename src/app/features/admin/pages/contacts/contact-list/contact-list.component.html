@@ -28,53 +28,57 @@
             <p class="text-xs text-gray-400 mt-1">Verifique se o filtro "Mostrar Lidas" está ativo.</p>
         </div>
         } @else {
-        <table class="w-full text-left">
-            <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold">
+        <div class="w-full overflow-x-auto rounded-lg shadow-sm border border-gray-100">
+
+            <table class="w-full text-left min-w-[600px] md:min-w-full"> <thead class="bg-gray-50 text-gray-500 uppercase text-xs font-bold">
             <tr>
-                <th class="p-4 w-10"></th> <th class="p-4">De</th>
+                <th class="p-4 w-10"></th>
+                <th class="p-4">De</th>
                 <th class="p-4">Assunto / Mensagem</th>
-                <th class="p-4">Data</th>
+                <th class="p-4 hidden md:table-cell">Data</th>
                 <th class="p-4 text-right">Ações</th>
             </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
-            @for (msg of visibleContacts(); track msg.id) {
-            <tr class="transition-colors hover:bg-gray-50" [class.font-bold]="!msg.isRead">
-
-                <td class="p-4 text-center">
-                    @if(!msg.isRead) {
+                <tbody class="divide-y divide-gray-100">
+                @for (msg of visibleContacts(); track msg.id) {
+                <tr class="transition-colors hover:bg-gray-50 cursor-pointer"
+                    [class.font-bold]="!msg.read"
+                    (click)="openMessage(msg)"> <td class="p-4 text-center">
+                    @if(!msg.read) {
                     <span class="inline-block w-2 h-2 rounded-full bg-[var(--lumiere-gold)]" title="Nova"></span>
                     }
                 </td>
 
-                <td class="p-4">
-                    <div class="text-gray-800">{{ msg.name }}</div>
-                    <div class="text-xs text-gray-400 font-normal">{{ msg.email }}</div>
-                </td>
+                    <td class="p-4">
+                        <div class="text-gray-800 font-medium">{{ msg.name }}</div>
+                        <div class="text-xs text-gray-400 font-normal truncate max-w-[120px]">{{ msg.email }}</div>
+                    </td>
 
-                <td class="p-4 max-w-md">
-                    <div class="truncate text-gray-600">
-                        {{ msg.message }}
-                    </div>
-                </td>
+                    <td class="p-4 max-w-[150px] md:max-w-md">
+                        <div class="truncate text-gray-600">
+                            {{ msg.message }}
+                        </div>
+                    </td>
 
-                <td class="p-4 text-xs text-gray-500 font-normal whitespace-nowrap">
-                    {{ msg.createdAt | date:'dd/MM/yyyy HH:mm' }}
-                </td>
-                <td class="p-4 text-right space-x-2" (click)="$event.stopPropagation()">
-                    <button (click)="openMessage(msg); $event.stopPropagation()"
-                            class="text-gray-400 hover:text-[var(--lumiere-bordeaux)] p-1 transition-colors cursor-pointer"
-                            title="Ler Mensagem">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
-                </td>
-            </tr>
-            }
-            </tbody>
-        </table>
+                    <td class="p-4 text-xs text-gray-500 font-normal whitespace-nowrap hidden md:table-cell">
+                        {{ msg.createdAt | date:'dd/MM/yyyy' }}
+                    </td>
+
+                    <td class="p-4 text-right">
+                        <button (click)="openMessage(msg); $event.stopPropagation()"
+                                class="text-gray-400 hover:text-[var(--lumiere-bordeaux)] p-2 transition-colors cursor-pointer bg-gray-50 rounded-full md:bg-transparent"
+                                title="Ler Mensagem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        </div>
         }
     </div>
 

@@ -25,7 +25,7 @@ export class ContactListComponent implements OnInit {
         if (this.showRead()) {
             return all;
         }
-        return all.filter(c => !c.isRead);
+        return all.filter(c => !c.read);
     });
 
     ngOnInit() {

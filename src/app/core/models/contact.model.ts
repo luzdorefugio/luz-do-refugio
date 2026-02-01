@@ -3,7 +3,7 @@ export interface Contact {
   name: string;
   email: string;
   message: string;
-  isRead: boolean;
+  read: boolean;
   createdBy?: string;
   createdAt?: string;
 }

@@ -9,7 +9,7 @@
                 </h2>
                 <div class="flex items-center gap-2 mt-1">
                     <span class="text-sm text-gray-500">{{ contact.email }}</span>
-                    @if(contact.isRead) {
+                    @if(contact.read) {
                     <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-green-200">LIDA</span>
                     } @else {
                     <span class="bg-[var(--lumiere-gold)] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">NOVA</span>
@@ -47,10 +47,10 @@
                     Fechar
                 </button>
 
-                @if(!contact.isRead) {
-                <button (click)="toggleReadStatus()" [disabled]="isLoading"
+                @if(!contact.read) {
+                <button (click)="toggleReadStatus()" [disabled]="isLoading()"
                         class="bg-green-600 text-white px-4 py-2 rounded font-bold text-sm hover:bg-green-700 shadow-sm disabled:opacity-50 transition-colors flex items-center gap-2">
-                    @if(isLoading) { <span class="animate-spin">⏳</span> }
+                    @if(isLoading()) { <span class="animate-spin">⏳</span> }
                     <span>Marcar como Lida</span>
                 </button>
                 }

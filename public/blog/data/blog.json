@@ -1,14 +1,14 @@
 [
     {
-        "slug": "arte-de-acender-uma-vela",
-        "title": "A arte de acender uma vela: Rituais para o teu refúgio",
-        "summary": "Mais do que luz, uma vela é um momento. Descobre como criar um ritual de relaxamento e tirar o máximo partido da tua primeira queima.",
-        "content": "<p>Acender uma vela parece simples, não é? Mas existe uma diferença entre apenas 'pôr fogo ao pavio' e criar um verdadeiro momento de refúgio.</p><h3>A Primeira Queima é Sagrada</h3><p>Quando acendes uma vela da Luz do Refúgio pela primeira vez, é crucial deixá-la queimar até que toda a superfície superior esteja líquida. Isto evita o 'efeito túnel' e garante que a tua vela dura muito mais tempo.</p><h3>O Pavio Importa</h3><p>Antes de cada nova utilização, apara o pavio para cerca de 5mm. Um pavio curto dá uma chama mais limpa, sem fumo negro, e mantém o aroma puro.</p>",
-        "image": "blog/images/ritual-vela.webp",
-        "date": "2026-02-02",
+        "slug": "calma-da-praia-em-seu-refugio",
+        "title": "A Calma da Praia em Seu Refúgio",
+        "summary": "Partilho convosco o meu amor pelas velas da Foz e como elas me ajudam a criar ambientes acolhedores.",
+        "content": "<p>Aqui estou eu, Laura, uma apaixonada pela Luz do Refúgio e acredito profundamente no poder das velas para criar ambientes acolhedores. Hoje, quero partilhar convosco um pouco da minha jornada com as nossas velas e como elas têm tornado o meu lar mais confortável e inspirador.</p><p><strong>A Conexão com a Praia</strong></p><p><a href=\\\"/loja/produto/922f8643-33bc-4349-91dc-2b5daa7d2ad0\\\" class=\\\"text-[#d4af37] hover:text-[#2a1a1a] font-medium underline decoration-1 underline-offset-2 transition-colors duration-300\\\">A Foz</a> é uma vela que me transporta diretamente para a minha primeira casa, na Foz do Arelho, onde cresci com a serenidade daquela paisagem única. Este aroma de Ozono, Brisa do Mar e Citrinos Frescos faz-me sentir em paz, evocando memórias inesquecíveis. Cada vela da Foz traz consigo uma história de serenidade e tranquilidade, remetendo-me ao meu refúgio natural.</p><p><strong>Criação de Ambientes Acolhedores</strong></p><p>Para mim, velas não são apenas um elemento decorativo, mas uma forma poderosa de criar ambientes que reflitam o nosso espírito e personalidade. <a href=\\\"/loja/produto/922f8643-33bc-4349-91dc-2b5daa7d2ad0\\\" class=\\\"text-[#d4af37] hover:text-[#2a1a1a] font-medium underline decoration-1 underline-offset-2 transition-colors duration-300\\\">A Foz</a> é perfeita para momentos de relaxamento em casa ou como um presente especial. Ela transforma qualquer espaço num santuário acolhedor, envolvendo-o num aroma de calma.</p><p><strong>História Inspiradora</strong></p><p>A Luz do Refúgio tem sido uma fonte constante de inspiração na minha vida. Cada vela que escolho reflete a dedicação e os valores da marca, desde o cuidado ambiental até à solidariedade social através das nossas iniciativas. Juntos, podemos criar momentos especiais e ajudar a tornar o mundo um lugar mais acolhedor.</p>",
+        "image": "blog/images/foz.webp",
+        "date": "2026-02-05",
         "author": "Laura da Luz do Refúgio",
         "minReaderTime": 5,
-        "active": false
+        "active": true
     },
     {
         "slug": "beneficios-cera-soja",

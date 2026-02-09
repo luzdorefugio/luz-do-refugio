@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductCardComponent } from '../product-card/product-card.component';
@@ -6,10 +6,6 @@ import { ShopProduct } from '../../../../core/models/shop-product.model';
 import { ShopProductService } from '../../../../core/services/shop-product.service';
 import { ReviewService } from '../../../../core/services/review.service';
 import { CartService } from '../../../../core/services/cart.service';
-
-// Declarações globais para as bibliotecas de animação
-declare var AOS: any;
-declare var feather: any;
 
 // Interface simples para as reviews
 interface Review {
@@ -25,7 +21,7 @@ interface Review {
     templateUrl: './product-list.component.html',
     styleUrls: ['./product-list.component.css']
 })
-export class ProductListComponent implements OnInit, AfterViewInit {
+export class ProductListComponent implements OnInit {
     private service = inject(ShopProductService);
     private reviewService = inject(ReviewService);
     private cartService = inject(CartService);
@@ -41,18 +37,6 @@ export class ProductListComponent implements OnInit, AfterViewInit {
     collectionProducts = computed(() => {
         return this.products().filter(p => p.featured === false);
     });
-
-
-    ngAfterViewInit() {
-        setTimeout(() => {
-            if (typeof AOS !== 'undefined') {
-                AOS.init({ duration: 800, once: true });
-            }
-            if (typeof feather !== 'undefined') {
-                feather.replace();
-            }
-        }, 100);
-    }
 
     ngOnInit() {
         this.loadProducts();

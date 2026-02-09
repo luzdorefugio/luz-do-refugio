@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AnalyticsService } from './core/services/analytics.service'; // Ajusta o caminho se necessário
+import * as AOS from 'aos';
+declare var feather: any;
 
 @Component({
   selector: 'app-root',
@@ -17,6 +19,16 @@ export class AppComponent implements OnInit {
     const consent = this.analyticsService.init();
     if (consent === null) {
       this.showCookieBanner();
+    }
+    // Iniciar animações
+    AOS.init({
+      duration: 800, // Duração da animação
+      once: true,    // Animar apenas uma vez
+    });
+
+    // Iniciar ícones (se estiveres a usar data-feather)
+    if (typeof feather !== 'undefined') {
+      feather.replace();
     }
   }
 

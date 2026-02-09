@@ -16,7 +16,7 @@
             <div class="md:w-1/2 flex justify-center" data-aos="fade-left">
                 <div class="w-80 bg-[#d4af37] rounded-[77px] opacity-20 blur-xl absolute"></div>
                 <img src="LOGO-3.webp" alt="Logo da Luz do refugio"
-                     class="relative rounded-[77px] w-80 object-cover shadow-2xl border-4 border-[#f9f5f0]">
+                     class="relative rounded-[77px] w-full max-w-[20rem] object-cover shadow-2xl border-4 border-[#f9f5f0]">
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
             </h2>
             <span class="text-rose-600 font-bold tracking-widest text-xs uppercase block">Edição Limitada</span>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto">
+        <div class="grid grid-cols-1 min-[850px]:grid-cols-2 gap-8 mx-auto">
             @for (p of highlightProducts(); track p.id) {
                 <div class="group relative flex flex-col bg-[#f9f5f0]/50 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-500 border border-transparent hover:border-rose-100 h-full" data-aos="fade-up">
                     <div class="pt-6 px-6 md:px-8 pb-2 text-center md:text-left">

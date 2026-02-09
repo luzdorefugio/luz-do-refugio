@@ -8,6 +8,9 @@
   --lumiere-dark: #2a1a1a;
 }
 
+html, body {
+    overflow-x: hidden;
+}
 body {
   font-family: 'Montserrat', sans-serif;
   background-color: #f9f5f0; /* creme */

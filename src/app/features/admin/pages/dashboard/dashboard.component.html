@@ -13,7 +13,8 @@
         </a>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+
         <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[var(--lumiere-gold)] flex items-center justify-between group hover:shadow-md transition-all">
             <div>
                 <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Faturado</p>
@@ -49,6 +50,19 @@
                 <i data-feather="shopping-bag"></i>
             </div>
         </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500 flex items-center justify-between group hover:shadow-md transition-all">
+            <div>
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Clientes</p>
+                <h3 class="text-2xl font-bold text-gray-800">
+                    {{ totalUsers() }}
+                </h3>
+            </div>
+            <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
+                <i data-feather="users"></i>
+            </div>
+        </div>
+
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-[fadeIn_0.5s]">
@@ -98,6 +112,7 @@
             </div>
         </div>
     </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
         <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-full">
@@ -126,18 +141,18 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                     @for (order of recentOrders(); track order.id) {
-                        <tr class="hover:bg-gray-50">
-                            <td class="p-4 font-medium">{{ order.customerName }}</td>
-                            <td class="p-4 font-bold text-gray-700">{{ order.totalAmount | currency:'EUR' }}</td>
-                            <td class="p-4">
-                                    <span [class]="'px-2 py-1 rounded text-xs font-bold ' + getStatusColor(order.status)">
-                                        {{ order.status }}
-                                    </span>
-                            </td>
-                            <td class="p-4 text-right text-gray-400 text-xs">
-                                {{ order.createdAt | date:'dd/MM HH:mm' }}
-                            </td>
-                        </tr>
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-4 font-medium">{{ order.customerName }}</td>
+                        <td class="p-4 font-bold text-gray-700">{{ order.totalAmount | currency:'EUR' }}</td>
+                        <td class="p-4">
+                                <span [class]="'px-2 py-1 rounded text-xs font-bold ' + getStatusColor(order.status)">
+                                    {{ order.status }}
+                                </span>
+                        </td>
+                        <td class="p-4 text-right text-gray-400 text-xs">
+                            {{ order.createdAt | date:'dd/MM HH:mm' }}
+                        </td>
+                    </tr>
                     }
                     </tbody>
                 </table>
@@ -160,6 +175,10 @@
                     <button routerLink="/admin/encomendas" class="w-full text-left px-4 py-3 rounded-lg bg-gray-50 hover:bg-[var(--lumiere-cream)] text-gray-700 hover:text-[var(--lumiere-bordeaux)] transition-colors flex items-center gap-3">
                         <i data-feather="list" class="w-4 h-4"></i>
                         Ver Todas as Encomendas
+                    </button>
+                    <button routerLink="/admin/clientes" class="w-full text-left px-4 py-3 rounded-lg bg-gray-50 hover:bg-[var(--lumiere-cream)] text-gray-700 hover:text-[var(--lumiere-bordeaux)] transition-colors flex items-center gap-3">
+                        <i data-feather="users" class="w-4 h-4"></i>
+                        Lista de Clientes
                     </button>
                 </div>
             </div>

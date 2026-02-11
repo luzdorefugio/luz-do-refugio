@@ -1,9 +1,9 @@
 import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Promotion } from '../../../../../core/models/promotion.model';
 import { PromotionService } from '../../../../../core/services/promotion.service';
 import { NotificationService } from '../../../../../core/services/notification.service';
-import { Promotion } from '../../../../../core/models/promotion.model';
 
 @Component({
   selector: 'app-promotion-form',
@@ -15,7 +15,7 @@ export class PromotionFormComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private promotionService = inject(PromotionService);
-  private notify = inject(NotificationService);
+  private notiService = inject(NotificationService);
 
   @Output() close = new EventEmitter<boolean>(); // true = refresh list, false = just close
 
@@ -102,12 +102,12 @@ export class PromotionFormComponent implements OnInit {
 
     request$.subscribe({
       next: () => {
-        this.notify.success(this.isEditMode ? 'Promoção atualizada!' : 'Promoção criada!');
+        this.notiService.success(this.isEditMode ? 'Promoção atualizada!' : 'Promoção criada!');
         this.close.emit(true); // Fecha e Refresh
       },
       error: (err) => {
         this.isLoading = false;
-        this.notify.apiError(err, 'Erro ao gravar');
+        this.notiService.apiError(err, 'Erro ao gravar');
       }
     });
   }

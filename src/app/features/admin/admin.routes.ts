@@ -11,6 +11,7 @@ import { ShippingListComponent } from './pages/shipping/shipping-list/shipping-l
 import { ReviewListComponent } from './pages/reviews/review-list/review-list.component';
 import { FinancialListComponent } from './pages/financial/financial-list/financial-list.component';
 import { ContactListComponent } from './pages/contacts/contact-list/contact-list.component';
+import { UserListComponent } from './pages/users/user-list/user-list.component';
 import { authGuard } from '../../core/guards/auth.guard';
 
 export const ADMIN_ROUTES: Routes = [
@@ -30,7 +31,9 @@ export const ADMIN_ROUTES: Routes = [
       { path: 'envios', component: ShippingListComponent },
       { path: 'reviews', component: ReviewListComponent },
       { path: 'finance', component: FinancialListComponent },
-      { path: 'contactos', component: ContactListComponent }
+      { path: 'contactos', component: ContactListComponent },
+      { path: 'clientes', component: UserListComponent }
+
     ]
   }
 ];

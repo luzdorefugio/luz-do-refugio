@@ -1,8 +1,10 @@
 export class User {
-  id?: string; // Adicionei o ID, é importante para updates
-  name: string = '';
-  role: string = '';
-  email?: string;
+    id?: string; // Adicionei o ID, é importante para updates
+    name: string = '';
+    role: string = '';
+    email?: string;
+    createdAt!: string;
+    ordersCount: number = 0;
 
   // --- NOVOS CAMPOS PARA PERFIL & CHECKOUT ---
   phone?: string;

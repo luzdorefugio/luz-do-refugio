@@ -2,8 +2,6 @@ import { Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-declare var feather: any;
-
 @Component({
   selector: 'app-admin-sidebar',
   standalone: true,
@@ -11,11 +9,5 @@ declare var feather: any;
   templateUrl: './sidebar.component.html',
   styles: []
 })
-export class SidebarComponent implements AfterViewInit {
-
-  ngAfterViewInit() {
-    if (typeof feather !== 'undefined') {
-      feather.replace();
-    }
-  }
+export class SidebarComponent {
 }
